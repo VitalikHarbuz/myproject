@@ -96,51 +96,30 @@ class Append_window(tkinter.Toplevel):
         self.first.place(x=160, y=70)
         self.second = ttk.Radiobutton(self, text="Повторний", variable=self.oglad_var, value=2)
         self.second.place(x=310, y=70)
-<<<<<<< HEAD
-=======
-        
->>>>>>> 02f5a6e3ac1c8f33e54b2d036420fd64fa89e35f
         """КОД ТАЛОНУ"""
         self.label_kod = ttk.Label(self, text='Код талону', font = self.font_style).place(x=10, y=100)
         self.kod_var = StringVar()
         self.kod = ttk.Entry(self, font = self.font_style, width=7, textvariable = self.kod_var)
         self.kod.place(x=160, y=100)
         self.kod_var.trace("w", lambda *args: self.limiter_symbols(self.kod_var, self.kod, 6))
-<<<<<<< HEAD
-=======
-
->>>>>>> 02f5a6e3ac1c8f33e54b2d036420fd64fa89e35f
         """СТАРИЙ КОД ТАЛОНУ"""
         self.label_old_kod = ttk.Label(self, text='Попередній код', font = self.font_style).place(x=10, y=135)
         self.old_kod_var = StringVar()
         self.old_kod = ttk.Entry(self, font = self.font_style, width=7, textvariable = self.old_kod_var)
         self.old_kod.place(x=190, y=135)
         self.old_kod_var.trace("w", lambda *args: self.limiter_symbols(self.old_kod_var, self.old_kod, 6))
-<<<<<<< HEAD
-=======
-
->>>>>>> 02f5a6e3ac1c8f33e54b2d036420fd64fa89e35f
         """РІК ПОПЕРЕДНЬОГО ТАЛОНУ"""
         self.label_year_pop_tal = ttk.Label(self, text='Рік', font = self.font_style).place(x=290, y=135)
         self.year_pop_tal_var = StringVar()
         self.year_pop_tal = ttk.Entry(self, font = self.font_style, width=6, textvariable = self.year_pop_tal_var)
         self.year_pop_tal.place(x=335, y=135)
         self.year_pop_tal_var.trace("w", lambda *args: self.limiter_symbols(self.year_pop_tal_var, self.year_pop_tal, 4))
-<<<<<<< HEAD
-=======
-       
->>>>>>> 02f5a6e3ac1c8f33e54b2d036420fd64fa89e35f
         """КНОПКА ПОШУК ПОПЕРЕДНЬОГО ТАЛОНУ"""
         self.btn_find_pop_tal = ttk.Button(self, text='ПОШУК ПОПЕРЕДНЬГО')
         self.btn_find_pop_tal.place(x=430, y=137)
         self.btn_find_pop_tal.bind('<Button-1>', lambda event: db.find_old_data([k for k, v in self.DICT_KOMIS.items() if v == self.komis.get()][0],
-<<<<<<< HEAD
                                                                                 self.kod_var.get(), self.old_kod_var.get(), self.year_pop_tal_var.get(), self.oglad_var,
                                                                                 #___ПЕРША_ПОЛОВИНА
-=======
-                                                                                self.kod_var.get(),
-                                                                                self.old_kod_var.get(), self.year_pop_tal_var.get(), self.oglad_var.get(),
->>>>>>> 02f5a6e3ac1c8f33e54b2d036420fd64fa89e35f
                                                                                 self.sex_var, self.first_name_var, self.name_var, self.surname_var, 
                                                                                 self.birth_date_day_var, self.birth_date_mount_var, self.birth_date_year_var, 
                                                                                 self.sity, self.raion, self.selo, self.street_var, self.work_var,
@@ -438,18 +417,11 @@ class Append_window(tkinter.Toplevel):
                                                                         '-'.join((str(self.teh_zas_1_var.get()), str(self.teh_zas_2_var.get()), str(self.teh_zas_3_var.get()), str(self.teh_zas_4_var.get()), 
                                                                                   str(self.teh_zas_5_var.get()), str(self.teh_zas_6_var.get()), str(self.teh_zas_7_var.get()), str(self.teh_zas_8_var.get()))).strip(),
                                                                         self.prog_reab_var.get(), self.prac.get()))
-<<<<<<< HEAD
         "КНОПКА РЕДАГУВАТИ"
         self.btn_edit = ttk.Button(self, text='РЕДАГУВАТИ', width=15)
         self.btn_edit.place(x=1000, y=765)
         self.btn_edit.bind('<Button-1>', lambda event: db.edit_data([k for k, v in self.DICT_KOMIS.items() if v == self.komis.get()][0],
                                                                     [self.kod.get() + ' ' * (8 - len(self.kod.get())) if len(self.kod.get()) <= 8 else self.kod.get()][0], 
-=======
-#___________________________________________________________________
-        self.btn_edit = ttk.Button(self, text='РЕДАГУВАТИ', width=15)
-        self.btn_edit.place(x=1000, y=765)
-        self.btn_edit.bind('<Button-1>', lambda event: db.edit_data(self.kod.get(), 
->>>>>>> 02f5a6e3ac1c8f33e54b2d036420fd64fa89e35f
                                                                     self.oglad_var.get(), 
                                                                     "-".join((self.data_ogl_day_var.get(), self.data_ogl_mount_var.get(), self.data_ogl_year_var.get())[::-1]),   
                                                                     self.first_name.get(), 
@@ -476,11 +448,7 @@ class Append_window(tkinter.Toplevel):
                                                                     self.vstan_grupa_B.get(), 
                                                                     self.strock.get(), 
                                                                     self.poteri.get(),
-<<<<<<< HEAD
                                                                     self.prichin.get(),
-=======
-                                                                    self.prichin.get(), 
->>>>>>> 02f5a6e3ac1c8f33e54b2d036420fd64fa89e35f
                                                                     '-'.join((str(self.potr_lik_1_var.get()), str(self.potr_lik_2_var.get()), str(self.potr_lik_3_var.get()), str(self.potr_lik_4_var.get()))).strip(), 
                                                                     self.diagnoz_2.get(), 
                                                                     self.expert.get(),
@@ -488,15 +456,8 @@ class Append_window(tkinter.Toplevel):
                                                                     '-'.join((str(self.teh_zas_1_var.get()), str(self.teh_zas_2_var.get()), str(self.teh_zas_3_var.get()), str(self.teh_zas_4_var.get()), str(self.teh_zas_5_var.get()), str(self.teh_zas_6_var.get()), str(self.teh_zas_7_var.get()), str(self.teh_zas_8_var.get()))).strip(),
                                                                     self.prog_reab_var.get(), 
                                                                     self.prac.get()))
-<<<<<<< HEAD
-=======
-#___________________________________________________________________
->>>>>>> 02f5a6e3ac1c8f33e54b2d036420fd64fa89e35f
         self.grab_set()
         self.focus_set()
-
-
-
 
 
     def limiter_symbols(self, Entry_var, Entry, count_sumbol):

@@ -67,17 +67,10 @@ class DB:
 			print('НЕ ЗАПОВНЕНІ КОНТРОЛЬНІ ПОЛЯ ПОЛЯ! (НОМЕР КОМІСІЇ І КОД ТАЛОНУ)')
 
 
-<<<<<<< HEAD
 	def find_old_data(self, num_msek, kod_var, old_kod_var, year_pop_tal_var, oglad_var, *args):
 		self.conn = sqlite3.connect('db_{}.db'.format(num_msek))
 		self.cur = self.conn.cursor()
 		if num_msek != 0 and kod_var != '' and old_kod_var != '' and year_pop_tal_var != '':
-=======
-	def find_old_data(self, num_msek, kod_var, old_kod_var, year_pop_tal_var, oglad_var, *args):	
-		if num_msek != 0 and oglad_var == 2 and old_kod_var != '' and year_pop_tal_var != '':
-			self.conn = sqlite3.connect('db_{}.db'.format(num_msek))
-			self.cur = self.conn.cursor()
->>>>>>> 02f5a6e3ac1c8f33e54b2d036420fd64fa89e35f
 			self.find = self.cur.execute('''SELECT * FROM db WHERE kod LIKE ? AND datezakl LIKE ?''', [old_kod_var+'%', year_pop_tal_var+'%'])
 			self.row = self.find.fetchone()
 			args[0].set(self.row[6])                #   СТАТЬ
@@ -114,18 +107,10 @@ class DB:
 			args[30].set(self.row[27].strip(' '))   # діагноз_2
 			args[31].set(self.row[36])              # працевлаштування
 			args[32].set(self.row[28])              # експерт.рішення
-<<<<<<< HEAD
 		elif num_msek != 0 and kod_var != '' and old_kod_var == '' and year_pop_tal_var != '':
 			self.find = self.cur.execute('''SELECT * FROM db WHERE kod LIKE ? AND datezakl LIKE ?''', [kod_var + '%', year_pop_tal_var + '%'])
 			self.row = self.find.fetchone()
 			oglad_var.set(self.row[1])
-=======
-		elif num_msek != 0 and oglad_var == 1 and kod_var != '' and year_pop_tal_var != '':
-			self.conn = sqlite3.connect('db_{}.db'.format(num_msek))
-			self.cur = self.conn.cursor()
-			self.find = self.cur.execute('''SELECT * FROM db WHERE kod LIKE ? AND datezakl LIKE ?''', [kod_var + '%', year_pop_tal_var + '%'])
-			self.row = self.find.fetchone()
->>>>>>> 02f5a6e3ac1c8f33e54b2d036420fd64fa89e35f
 			args[0].set(self.row[6])                #   СТАТЬ
 			args[1].set(self.row[3].strip(' '))     #   ПРІЗВ.
 			args[2].set(self.row[4].strip(' '))     #   ІМЯ.
@@ -160,92 +145,9 @@ class DB:
 			args[30].set(self.row[27].strip(' '))   # діагноз_2
 			args[31].set(self.row[36])              # працевлаштування
 			args[32].set(self.row[28])              # експерт.рішення
-<<<<<<< HEAD
 		else:
 			print('НЕ ЗАПОВНЕНІ ПОТРІБНІ ПОЛЯ! (НОМ.КОМІС. або ОГЛЯД або ПОП.КОД або РІК ПОП.ТАЛОНУ)')
-=======
-		#else:
-		#	print('НЕ ЗАПОВНЕНІ ПОТРІБНІ ПОЛЯ! (НОМ.КОМІС. або ОГЛЯД або ПОП.КОД або РІК ПОП.ТАЛОНУ)')
 
->>>>>>> 02f5a6e3ac1c8f33e54b2d036420fd64fa89e35f
-
-	def edit_data(self, *args):
-		self.conn = sqlite3.connect('db_1.db')
-		self.cur = self.conn.cursor()
-		self.edit = self.cur.execute('''UPDATE db SET kod=?, 
-													oglad=?, 
-													datezakl=?, 
-													famil=?, 
-													name=?, 
-													tato=?, 
-													pol=?, 
-													rod=?, 
-													kodsity=?, 
-													kodraion=?, 
-													selo=?, 
-													street=?,
-													woker=?, 
-													social=?, 
-													special=?, 
-													mesto=?, 
-													ministr=?, 
-													organ=?, 
-													lpu=?,
-													moglad=?, 
-													grupinv=?, 
-													grupinvi=?, 
-													toglad=?, 
-													roglad=?, 
-													rogladi=?, 
-													invalid=?, 
-													poteri=?, 
-													prichin=?, 
-													faktor=?, 
-													diagnoz=?, 
-													expert=?,
-													rebwork=?, 
-													rebhelp=?, 
-													prog2=?, 
-													prog3=? ]
-													WHERE kod=? AND datezakl=?''', (args[0],
-																					args[1],
-																					args[2],
-																					args[3],
-																					args[4],
-																					args[5],
-																					args[6],
-																					args[7],
-																					args[8],
-																					args[9],
-																					args[10],
-																					args[11],
-																					args[12],
-																					args[13],
-																					args[14],
-																					args[15],
-																					args[16],
-																					args[17],
-																					args[18],
-																					args[19],
-																					args[20],
-																					args[21],
-																					args[22],
-																					args[23],
-																					args[24],
-																					args[25],
-																					args[26],
-																					args[27],
-																					args[28],
-																					args[29],
-																					args[30],
-																					args[31],
-																					args[32],
-																					args[33],
-																					args[34], 
-																					args[0],
-																					str(args[2]) + '%'))
-		self.conn.commit()
-		#______________________________________________________________________
 
 	def edit_data(self, num_msek, *args):
 		#print(num_msek)

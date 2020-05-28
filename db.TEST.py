@@ -41,8 +41,4 @@ cur = conn.cursor()
 exe = cur.execute("""SELECT * FROM db""")
 [print(row, '\n') for row in exe.fetchall()]
 #ins = cur.execute("""INSERT INTO db(famil, name, tato) VALUES(?, ?, ?)""", [f_name, name, surname])
-<<<<<<< HEAD
 #conn.commit()
-=======
-#conn.commit()
->>>>>>> 02f5a6e3ac1c8f33e54b2d036420fd64fa89e35f
