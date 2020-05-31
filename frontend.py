@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkinter import *
 from tkinter import messagebox as mb
 from pyautogui import press
+import datetime 
 import backend
 
 class Main_window(tkinter.Frame):
@@ -35,7 +36,7 @@ class Main_window(tkinter.Frame):
         btn_open_dialog = tkinter.Button(text='Додати', bd=2, command=self.add_dialog, image=self.add_img)  #bg='white', 
         btn_open_dialog.place(x=200, y=300)
         self.search_img = tkinter.PhotoImage(file='search.png')
-        btn_search_dialog = tkinter.Button(text='Пошук', bd=2, command=self.search_dialog, image=self.search_img)
+        btn_search_dialog = tkinter.Button(text='Пошук', bd=2, command=self.find_dialog, image=self.search_img)
         btn_search_dialog.place(x=500, y=300)
         self.edit_img = tkinter.PhotoImage(file='edit.png')
         btn_edit_dialog = tkinter.Button(text='Редагувати', bd=2, command=self.edit_dialog, image=self.edit_img)
@@ -50,8 +51,8 @@ class Main_window(tkinter.Frame):
     def add_dialog(self):
         Append_window()
 
-    def search_dialog(self):
-        pass
+    def find_dialog(self):
+        Finder_window()
 
     def edit_dialog(self):
         pass
@@ -68,9 +69,9 @@ class Append_window(tkinter.Toplevel):
     def __init__(self):
         super().__init__(root)
         self.font_style = ('helvetica', 16)
+        self.date_now = datetime.datetime.now()
         self.init_append_window()
-        #self.limiter()
-
+        
 
     def init_append_window(self):
         """ВІКНО ВВОДУ ТАЛОНУ"""
@@ -81,44 +82,50 @@ class Append_window(tkinter.Toplevel):
         y = (main_window.winfo_screenheight() // 2 - 30) - (h // 2)
         self.geometry('{}x{}+{}+{}'.format(w, h, x, y))
         self.resizable(False, False)
+        
+        self.message_var = StringVar()
+        self.message = ttk.Label(self, textvariable=self.message_var, font = self.font_style, foreground='red').place(x=10, y=765)
+        
         """ВИБІР КОМІСІЇ"""
-        self.DICT_KOMIS = {0:'--', 1:'Обласна', 2:'Міськміжрайонна', 3:'Калуська', 4:'Коломийська', 5:'Кардіологічна', 6:'Міська', 
+        self.DICT_KOMIS = {0:'--', 1:'Обласна', 2:'Міськміжрайонна', 3:'Калуська', 4:'Коломийська', 5:'Кардіологічна', 6:'Міська',
                            7:'Травматологічна', 8:'Психіатрична', 9:'Фтизіо-пульмонологічна', 10:'Міжрайонна', 11:'Коломия №2'}
-        self.label_komis = ttk.Label(self, text='Вибір комісії:', font = self.font_style).place(x=10, y=30)
+        self.label_komis = ttk.Label(self, text='Вибір комісії:', font = self.font_style).place(x=10, y=10)
         self.komis = ttk.Combobox(self, values=[self.DICT_KOMIS[i] for i in self.DICT_KOMIS], font = self.font_style)
         self.komis.current(0)
-        self.komis.place(x=160, y=30)
+        self.komis.place(x=160, y=10)
         """ОГЛЯД"""
-        self.label_oglad = ttk.Label(self, text='Огляд', font = self.font_style).place(x=10, y=65)
+        self.label_oglad = ttk.Label(self, text='Огляд', font = self.font_style).place(x=10, y=45)
         self.oglad_var = IntVar()
         self.oglad_var.set(2)
-        self.first = ttk.Radiobutton(self, text="Первинний", variable=self.oglad_var, value=1)
-        self.first.place(x=160, y=70)
-        self.second = ttk.Radiobutton(self, text="Повторний", variable=self.oglad_var, value=2)
-        self.second.place(x=310, y=70)
+        self.first = ttk.Radiobutton(self, text='ПЕРВИННИЙ', variable=self.oglad_var, value=1)
+        self.first.place(x=160, y=50)
+        self.second = ttk.Radiobutton(self, text='ПОВТОРНИЙ', variable=self.oglad_var, value=2)
+        self.second.place(x=310, y=50)
         """КОД ТАЛОНУ"""
-        self.label_kod = ttk.Label(self, text='Код талону', font = self.font_style).place(x=10, y=100)
+        self.label_kod = ttk.Label(self, text='Код талону', font = self.font_style).place(x=10, y=80)
         self.kod_var = StringVar()
         self.kod = ttk.Entry(self, font = self.font_style, width=7, textvariable = self.kod_var)
-        self.kod.place(x=160, y=100)
+        self.kod.place(x=160, y=80)
         self.kod_var.trace("w", lambda *args: self.limiter_symbols(self.kod_var, self.kod, 6))
         """СТАРИЙ КОД ТАЛОНУ"""
-        self.label_old_kod = ttk.Label(self, text='Попередній код', font = self.font_style).place(x=10, y=135)
+        self.label_old_kod = ttk.Label(self, text='Попередній код', font = self.font_style).place(x=10, y=115)
         self.old_kod_var = StringVar()
         self.old_kod = ttk.Entry(self, font = self.font_style, width=7, textvariable = self.old_kod_var)
-        self.old_kod.place(x=190, y=135)
+        self.old_kod.place(x=190, y=115)
         self.old_kod_var.trace("w", lambda *args: self.limiter_symbols(self.old_kod_var, self.old_kod, 6))
         """РІК ПОПЕРЕДНЬОГО ТАЛОНУ"""
-        self.label_year_pop_tal = ttk.Label(self, text='Рік', font = self.font_style).place(x=290, y=135)
+        self.label_year_pop_tal = ttk.Label(self, text='Рік', font = self.font_style).place(x=290, y=115)
         self.year_pop_tal_var = StringVar()
+        self.year_pop_tal_var.set(str(self.date_now.year))
         self.year_pop_tal = ttk.Entry(self, font = self.font_style, width=6, textvariable = self.year_pop_tal_var)
-        self.year_pop_tal.place(x=335, y=135)
+        self.year_pop_tal.place(x=335, y=115)
         self.year_pop_tal_var.trace("w", lambda *args: self.limiter_symbols(self.year_pop_tal_var, self.year_pop_tal, 4))
         """КНОПКА ПОШУК ПОПЕРЕДНЬОГО ТАЛОНУ"""
-        self.btn_find_pop_tal = ttk.Button(self, text='ПОШУК ПОПЕРЕДНЬГО')
-        self.btn_find_pop_tal.place(x=430, y=137)
-        self.btn_find_pop_tal.bind('<Button-1>', lambda event: db.find_old_data([k for k, v in self.DICT_KOMIS.items() if v == self.komis.get()][0],
-                                                                                self.kod_var.get(), self.old_kod_var.get(), self.year_pop_tal_var.get(), self.oglad_var,
+        self.btn_find_pop_tal = ttk.Button(self, text='ПОШУК')
+        self.btn_find_pop_tal.place(x=430, y=117)
+        self.btn_find_pop_tal.bind('<Button-1>', lambda event: db.find_old_talon(self.message_var,
+                                                                                [k for k, v in self.DICT_KOMIS.items() if v == self.komis.get()][0],
+                                                                                self.kod_var.get().upper(), self.old_kod_var.get().upper(), self.year_pop_tal_var.get(), self.oglad_var,
                                                                                 #___ПЕРША_ПОЛОВИНА
                                                                                 self.sex_var, self.first_name_var, self.name_var, self.surname_var, 
                                                                                 self.birth_date_day_var, self.birth_date_mount_var, self.birth_date_year_var, 
@@ -126,18 +133,20 @@ class Append_window(tkinter.Toplevel):
                                                                                 self.social_var, self.special_var, self.osvita_var, self.diagnoz_1_var,
                                                                                 self.uskladn_var, self.zaklad_var,# args[17] - ЦЕ "zaklad_var"
                                                                                 #___ДРУГА_ПОЛОВИНА
-                                                                                self.data_ogl_day_var, self.data_ogl_mount_var, self.data_ogl_year_var, 
+                                                                                self.data_ogl_day_var, self.data_ogl_mount_var, self.data_ogl_year_var,
+                                                                                #datetime.date(self.data_ogl_year_var, self.data_ogl_mount_var, self.data_ogl_day_var),
                                                                                 self.misce_ogl_var, self.pop_grupa_A_var, self.pop_grupa_B_var, 
                                                                                 self.meta_var, self.vstan_grupa_A_var, self.vstan_grupa_B_var, self.strock_var,
                                                                                 self.poteri_var, self.prichin_var, self.diagnoz_2_var, self.prac_var,
                                                                                 self.expert_var))
+        self.sep = ttk.Label(self, text = '_' * 200).place(x=0, y=145)
         """СТАТЬ"""
         self.sex = ttk.Label(self, text='Стать', font = self.font_style).place(x=10, y=170)
         self.sex_var = IntVar()
         self.sex_var.set(1)
-        self.men = ttk.Radiobutton(self, text="чол.", variable=self.sex_var, value=1)
+        self.men = ttk.Radiobutton(self, text='ЧОЛОВІК', variable=self.sex_var, value=1)
         self.men.place(x=160, y=175)
-        self.women = ttk.Radiobutton(self, text="жін.", variable=self.sex_var, value=2)
+        self.women = ttk.Radiobutton(self, text='ЖІНКА', variable=self.sex_var, value=2)
         self.women.place(x=260, y=175)
         """ПРІЗВИЩЕ"""
         self.label_first_name = ttk.Label(self, text='Прізвище', font = self.font_style).place(x=10, y=205)
@@ -196,9 +205,9 @@ class Append_window(tkinter.Toplevel):
         self.label_work = ttk.Label(self, text='Працює/Не працює', font = self.font_style).place(x=10, y=485)
         self.work_var = IntVar()
         self.work_var.set(2)
-        self.work = ttk.Radiobutton(self, text="Працює", variable=self.work_var, value=1)
+        self.work = ttk.Radiobutton(self, text='ПРАЦЮЄ', variable=self.work_var, value=1)
         self.work.place(x=220, y=490)
-        self.not_work = ttk.Radiobutton(self, text="Не працює", variable=self.work_var, value=2)
+        self.not_work = ttk.Radiobutton(self, text='НЕ ПРАЦЮЄ', variable=self.work_var, value=2)
         self.not_work.place(x=320, y=490)
         """СОЦІАЛЬНА КАТЕГОРІЯ"""
         self.label_social = ttk.Label(self, text='Соціальна категорія', font = self.font_style).place(x=10, y=520)
@@ -239,39 +248,42 @@ class Append_window(tkinter.Toplevel):
         """ДАТА ОГЛЯДУ"""
         self.label_data_ogl =  ttk.Label(self, text='Дата огляду', font = self.font_style).place(x=700, y=170)
         self.data_ogl_day_var = StringVar()
+        self.data_ogl_day_var.set(['0' + str(self.date_now.day) if self.date_now.day < 10 else str(self.date_now.day)][0])
         self.data_ogl_day = ttk.Entry(self, font = self.font_style, width=3, textvariable = self.data_ogl_day_var)
-        self.data_ogl_day.place(x=840, y=170)
+        self.data_ogl_day.place(x=920, y=170)
         self.data_ogl_day_var.trace("w", lambda *args: self.limiter_symbols(self.data_ogl_day_var, self.data_ogl_day, 2))
         self.data_ogl_mount_var = StringVar()
+        self.data_ogl_mount_var.set(['0' + str(self.date_now.month) if self.date_now.month < 10 else str(self.date_now.month)][0])
         self.data_ogl_mount = ttk.Entry(self, font = self.font_style, width=3, textvariable = self.data_ogl_mount_var)
-        self.data_ogl_mount.place(x=890, y=170)
+        self.data_ogl_mount.place(x=970, y=170)
         self.data_ogl_mount_var.trace("w", lambda *args: self.limiter_symbols(self.data_ogl_mount_var, self.data_ogl_mount, 2))
         self.data_ogl_year_var = StringVar()
+        self.data_ogl_year_var.set(str(self.date_now.year))
         self.data_ogl_year = ttk.Entry(self, font = self.font_style, width=5, textvariable = self.data_ogl_year_var)
-        self.data_ogl_year.place(x=940, y=170)
+        self.data_ogl_year.place(x=1020, y=170)
         self.data_ogl_year_var.trace("w", lambda *args: self.limiter_symbols(self.data_ogl_year_var, self.data_ogl_year, 4))
         """МІСЦЕ ОГЛЯДУ"""
         self.label_misce_ogl =  ttk.Label(self, text='Місце огляду', font = self.font_style).place(x=700, y=205)
         self.misce_ogl_var = StringVar()
         self.misce_ogl = ttk.Entry(self, font = self.font_style, width=2, textvariable = self.misce_ogl_var)
-        self.misce_ogl.place(x=850, y=205)
+        self.misce_ogl.place(x=920, y=205)
         self.misce_ogl_var.trace("w", lambda *args: self.limiter_symbols(self.misce_ogl_var, self.misce_ogl, 1))
         """ПОПЕРЕДНЯ ГРУПА a"""
         self.label_pop_grupa_A =  ttk.Label(self, text='Попередня група', font = self.font_style).place(x=700, y=240)
         self.pop_grupa_A_var = StringVar()
         self.pop_grupa_A = ttk.Entry(self, font = self.font_style, width=2, textvariable = self.pop_grupa_A_var)
-        self.pop_grupa_A.place(x=900, y=240)
+        self.pop_grupa_A.place(x=920, y=240)
         self.pop_grupa_A_var.trace("w", lambda *args: self.limiter_symbols(self.pop_grupa_A_var, self.pop_grupa_A, 1))
         """ПОПЕРЕДНЯ ГРУПА б"""
         self.pop_grupa_B_var = StringVar()
         self.pop_grupa_B = ttk.Entry(self, font = self.font_style, width=2, textvariable = self.pop_grupa_B_var)
-        self.pop_grupa_B.place(x=950, y=240)
+        self.pop_grupa_B.place(x=970, y=240)
         self.pop_grupa_B_var.trace("w", lambda *args: self.limiter_symbols(self.pop_grupa_B_var, self.pop_grupa_B, 1))        
         """МЕТА"""
         self.label_meta =  ttk.Label(self, text='Мета огляду', font = self.font_style).place(x=700, y=275)
         self.meta_var = StringVar()
         self.meta = ttk.Entry(self, font = self.font_style, width=3, textvariable = self.meta_var)
-        self.meta.place(x=840, y=275)
+        self.meta.place(x=920, y=275)
         self.meta_var.trace("w", lambda *args: self.limiter_symbols(self.meta_var, self.meta, 2))
         """ВСТАНОВЛ.ГРУПА a"""
         self.label_vstan_grupa_A = ttk.Label(self, text='Встановлена група', font = self.font_style).place(x=700, y=310)
@@ -288,19 +300,19 @@ class Append_window(tkinter.Toplevel):
         self.label_strock =  ttk.Label(self, text='Строк', font = self.font_style).place(x=700, y=345)
         self.strock_var = StringVar()
         self.strock = ttk.Entry(self, font = self.font_style, width=2, textvariable = self.strock_var)
-        self.strock.place(x=840, y=345)
+        self.strock.place(x=920, y=345)
         self.strock_var.trace("w", lambda *args: self.limiter_symbols(self.strock_var, self.strock, 1))
         """ВІДСОТКИ ВТРАТИ"""
-        self.label_poteri =  ttk.Label(self, text='Відсотки втрати.', font = self.font_style).place(x=700, y=380)
+        self.label_poteri =  ttk.Label(self, text='Відсотки втрати пр.', font = self.font_style).place(x=700, y=380)
         self.poteri_var = StringVar()
         self.poteri = ttk.Entry(self, font = self.font_style, width=4, textvariable = self.poteri_var)
-        self.poteri.place(x=890, y=380)
+        self.poteri.place(x=920, y=380)
         self.poteri_var.trace("w", lambda *args: self.limiter_symbols(self.poteri_var, self.poteri, 3))
         """ПРИЧИНА"""
         self.label_prichin =  ttk.Label(self, text='Причина', font = self.font_style).place(x=700, y=415)
         self.prichin_var = StringVar()
         self.prichin = ttk.Entry(self, font = self.font_style, width=3, textvariable = self.prichin_var)
-        self.prichin.place(x=840, y=415)
+        self.prichin.place(x=920, y=415)
         self.prichin_var.trace("w", lambda *args: self.limiter_symbols(self.prichin_var, self.prichin, 2))
         """ВСТАНОВЛЕНИЙ ДІАГНОЗ"""
         self.label_diagnoz_2 = ttk.Label(self, text='Встановл.діагноз', font = self.font_style).place(x=700, y=450)
@@ -339,7 +351,7 @@ class Append_window(tkinter.Toplevel):
         self.expert.place(x=920, y=555)
         self.expert_var.trace("w", lambda *args: self.limiter_symbols(self.expert_var, self.expert, 2))
         """Рек. з працевлаштування:"""
-        self.label_rek_prac =  ttk.Label(self, text='Рек. з працевлаштування:', font = self.font_style).place(x=700, y=585)
+        self.label_rek_prac =  ttk.Label(self, text='Рек. з працевлаштування', font = self.font_style).place(x=700, y=585)
         self.rek_prac_1_var = IntVar()
         self.rek_prac_1 = Checkbutton(self, text='1', variable=self.rek_prac_1_var, onvalue=1, offvalue=0)
         self.rek_prac_1.place(x=980, y=585)
@@ -390,27 +402,28 @@ class Append_window(tkinter.Toplevel):
         self.teh_zas_8 = Checkbutton(self, text='15', variable=self.teh_zas_8_var, onvalue=15, offvalue=0)
         self.teh_zas_8.place(x=1230, y=690)
         """ЕФЕКТИВНІСТЬ ПРОГРАМИ РЕАБІЛІТАЦІЇ"""
-        self.label_prog_reab =  ttk.Label(self, text='Ефективність прогр. реаб.:', font = self.font_style).place(x=700, y=725)
+        self.label_prog_reab =  ttk.Label(self, text='Ефективність прогр. реаб.', font = self.font_style).place(x=700, y=725)
         self.prog_reab_var = IntVar()
         self.prog_reab_var.set(2)
-        self.prog_reab_1 = ttk.Radiobutton(self, text="повністю", variable=self.prog_reab_var, value=1)
-        self.prog_reab_1.place(x=1000, y=730)
-        self.prog_reab_2 = ttk.Radiobutton(self, text="часково", variable=self.prog_reab_var, value=2)
-        self.prog_reab_2.place(x=1080, y=730)
-        self.prog_reab_3 = ttk.Radiobutton(self, text="не виконана", variable=self.prog_reab_var, value=3)
-        self.prog_reab_3.place(x=1160, y=730)
+        self.prog_reab_1 = ttk.Radiobutton(self, text='ПОВНІСТЮ', variable=self.prog_reab_var, value=1)
+        self.prog_reab_1.place(x=970, y=730)
+        self.prog_reab_2 = ttk.Radiobutton(self, text='ЧАСКОВО', variable=self.prog_reab_var, value=2)
+        self.prog_reab_2.place(x=1060, y=730)
+        self.prog_reab_3 = ttk.Radiobutton(self, text='НЕ ВИКОНАНА', variable=self.prog_reab_var, value=3)
+        self.prog_reab_3.place(x=1140, y=730)
         """КНОПКА ДОДАТИ"""
         self.btn_append = ttk.Button(self, text='ДОДАТИ', width=15)
         self.btn_append.place(x=1160, y=765)
-        self.btn_append.bind('<Button-1>', lambda event: db.insert_data([k for k, v in self.DICT_KOMIS.items() if v == self.komis.get()][0],
-                                                                        [self.kod.get() + ' ' * (8 - len(self.kod.get())) if len(self.kod.get()) <= 8 else self.kod.get()][0], 
+        self.btn_append.bind('<Button-1>', lambda event: db.append_talon([k for k, v in self.DICT_KOMIS.items() if v == self.komis.get()][0],
+                                                                        [self.kod.get().upper() + ' ' * (8 - len(self.kod.get())) if len(self.kod.get()) <= 8 else self.kod.get().upper()][0], 
                                                                         self.oglad_var.get(), 
-                                                                        "-".join((self.data_ogl_day_var.get(), self.data_ogl_mount_var.get(), self.data_ogl_year_var.get())[::-1]),   
-                                                                        self.first_name.get(), self.name.get(), self.surname.get(), self.sex_var.get(), "-".join((self.birth_date_day_var.get(), 
-                                                                        self.birth_date_mount_var.get(), self.birth_date_year_var.get())[::-1]), self.sity.get(), self.raion.get(), self.selo.get(),
-                                                                        self.street.get(), self.work_var.get(), self.social.get(), self.special.get(), self.osvita.get(),
-                                                                        self.diagnoz_1.get(), self.zaklad.get(), self.uskladn.get(), self.misce_ogl.get(), self.pop_grupa_A.get(), self.pop_grupa_B.get(),
-                                                                        self.meta.get(), self.vstan_grupa_A.get(), self.vstan_grupa_B.get(), self.strock.get(), self.poteri.get(), self.prichin.get(), 
+                                                                        datetime.date(int(self.data_ogl_year_var.get()), int(self.data_ogl_mount_var.get()), int(self.data_ogl_day_var.get())),    
+                                                                        self.first_name.get(), self.name.get(), self.surname.get(), self.sex_var.get(), 
+                                                                        datetime.date(int(self.birth_date_day_var.get()), int(self.birth_date_mount_var.get()), int(self.birth_date_year_var.get())),
+                                                                        self.sity.get(), self.raion.get(), self.selo.get(),self.street.get(), self.work_var.get(), self.social.get(),
+                                                                        self.special.get(), self.osvita.get(), self.diagnoz_1.get(), self.zaklad.get(), self.uskladn.get(), self.misce_ogl.get(), 
+                                                                        self.pop_grupa_A.get(), self.pop_grupa_B.get(), self.meta.get(), self.vstan_grupa_A.get(), self.vstan_grupa_B.get(), 
+                                                                        self.strock.get(), self.poteri.get(), self.prichin.get(), 
                                                                         '-'.join((str(self.potr_lik_1_var.get()), str(self.potr_lik_2_var.get()), str(self.potr_lik_3_var.get()), str(self.potr_lik_4_var.get()))).strip(), 
                                                                         self.diagnoz_2.get(), self.expert.get(),
                                                                         '-'.join((str(self.rek_prac_1_var.get()), str(self.rek_prac_2_var.get()), str(self.rek_prac_3_var.get()))).strip(),
@@ -419,16 +432,13 @@ class Append_window(tkinter.Toplevel):
                                                                         self.prog_reab_var.get(), self.prac.get()))
         "КНОПКА РЕДАГУВАТИ"
         self.btn_edit = ttk.Button(self, text='РЕДАГУВАТИ', width=15)
-        self.btn_edit.place(x=1000, y=765)
-        self.btn_edit.bind('<Button-1>', lambda event: db.edit_data([k for k, v in self.DICT_KOMIS.items() if v == self.komis.get()][0],
-                                                                    [self.kod.get() + ' ' * (8 - len(self.kod.get())) if len(self.kod.get()) <= 8 else self.kod.get()][0], 
+        self.btn_edit.place(x=1060, y=765)
+        self.btn_edit.bind('<Button-1>', lambda event: db.edit_talon([k for k, v in self.DICT_KOMIS.items() if v == self.komis.get()][0],
+                                                                    [self.kod.get().upper() + ' ' * (8 - len(self.kod.get())) if len(self.kod.get()) <= 8 else self.kod.get().upper()][0], 
                                                                     self.oglad_var.get(), 
-                                                                    "-".join((self.data_ogl_day_var.get(), self.data_ogl_mount_var.get(), self.data_ogl_year_var.get())[::-1]),   
-                                                                    self.first_name.get(), 
-                                                                    self.name.get(), 
-                                                                    self.surname.get(), 
-                                                                    self.sex_var.get(), 
-                                                                    "-".join((self.birth_date_day_var.get(), self.birth_date_mount_var.get(), self.birth_date_year_var.get())[::-1]), 
+                                                                    datetime.date(int(self.data_ogl_year_var.get()), int(self.data_ogl_mount_var.get()), int(self.data_ogl_day_var.get())),   
+                                                                    self.first_name.get(), self.name.get(), self.surname.get(), self.sex_var.get(), 
+                                                                    datetime.date(int(self.birth_date_day_var.get()), int(self.birth_date_mount_var.get()), int(self.birth_date_year_var.get())),
                                                                     self.sity.get(), 
                                                                     self.raion.get(), 
                                                                     self.selo.get(),
@@ -467,6 +477,135 @@ class Append_window(tkinter.Toplevel):
             press('tab')
 
 
+class Finder_window(tkinter.Toplevel):
+    
+    def __init__(self):
+        super().__init__(root)
+        self.font_style = ('helvetica', 12, 'bold')
+        self.init_finder_window()
+
+
+    def init_finder_window(self):
+        self.title('Пошук осіб')
+        w = main_window.winfo_screenwidth() - 100
+        h = main_window.winfo_screenheight() - 100
+        x = (main_window.winfo_screenwidth() // 2) - (w // 2)
+        y = (main_window.winfo_screenheight() // 2 - 30) - (h // 2)
+        self.geometry('{}x{}+{}+{}'.format(w, h, x, y))
+        self.resizable(False, False)
+        #self.toolbar = tkinter.Frame(self, bd=4)
+        #self.toolbar.pack(side=tkinter.TOP, fill=tkinter.X)
+        """ВИБІР КОМІСІЇ"""
+        self.toolbar1 = tkinter.Frame(self, bd=4)
+        self.toolbar1.pack(side=tkinter.TOP, fill=tkinter.X)
+        self.DICT_KOMIS = {0:'ВСІ', 1:'Обласна', 2:'Міськміжрайонна', 3:'Калуська', 4:'Коломийська', 5:'Кардіологічна', 6:'Міська',
+                           7:'Травматологічна', 8:'Психіатрична', 9:'Фтизіо-пульмонологічна', 10:'Міжрайонна', 11:'Коломия №2'}
+        self.label_komis = ttk.Label(self.toolbar1, text='Вибір комісії', font = self.font_style).pack(side=tkinter.LEFT)
+        self.komis = ttk.Combobox(self.toolbar1, values=[self.DICT_KOMIS[i] for i in self.DICT_KOMIS], font = self.font_style)
+        self.komis.current(0)
+        self.komis.pack(side=tkinter.LEFT)
+        
+        self.sex = ttk.Label(self.toolbar1, text='Стать', font = self.font_style)
+        self.sex.pack(side=tkinter.LEFT)
+        self.sex_var = IntVar()
+        self.sex_var.set(1)
+        self.men = ttk.Radiobutton(self.toolbar1, text='ЧОЛОВІК', variable=self.sex_var, value=1)
+        self.men.pack(side=tkinter.LEFT)
+        self.women = ttk.Radiobutton(self.toolbar1, text='ЖІНКА', variable=self.sex_var, value=2)
+        self.women.pack(side=tkinter.LEFT)
+        
+        self.label_first_name = ttk.Label(self.toolbar1, text='Прізвище', font = self.font_style).pack(side=tkinter.LEFT)
+        self.first_name_var = StringVar()
+        self.first_name = ttk.Entry(self.toolbar1, font = self.font_style, textvariable = self.first_name_var)
+        self.first_name.pack(side=tkinter.LEFT)
+        #self.first_name_var.trace("w", lambda *args: self.limiter_symbols(self.first_name_var, self.first_name, 20))
+        """ІМЯ"""
+        self.label_name = ttk.Label(self.toolbar1, text='Ім\'я', font = self.font_style).pack(side=tkinter.LEFT)
+        self.name_var = StringVar()
+        self.name = ttk.Entry(self.toolbar1, font = self.font_style, textvariable = self.name_var)
+        self.name.pack(side=tkinter.LEFT)
+        #self.name_var.trace("w", lambda *args: self.limiter_symbols(self.name_var, self.name, 20))
+        """ДАТА НАРОДЖЕННЯ"""
+        self.label_birth_date = ttk.Label(self.toolbar1, text='Дата народження', font = self.font_style).pack(side=tkinter.LEFT)
+        self.birth_date_day_var = StringVar()
+        self.birth_date_day = ttk.Entry(self.toolbar1, font = self.font_style, width=3, textvariable = self.birth_date_day_var)
+        self.birth_date_day.pack(side=tkinter.LEFT)
+        #self.birth_date_day_var.trace("w", lambda *args: self.limiter_symbols(self.birth_date_day_var, self.birth_date_day, 2))
+        self.birth_date_mount_var = StringVar()
+        self.birth_date_mount = ttk.Entry(self.toolbar1, font = self.font_style, width=3, textvariable = self.birth_date_mount_var)
+        self.birth_date_mount.pack(side=tkinter.LEFT)
+        #self.birth_date_mount_var.trace("w", lambda *args: self.limiter_symbols(self.birth_date_mount_var, self.birth_date_mount, 2))
+        self.birth_date_year_var = StringVar()
+        self.birth_date_year = ttk.Entry(self.toolbar1, font = self.font_style, width=5, textvariable = self.birth_date_year_var)
+        self.birth_date_year.pack(side=tkinter.LEFT)
+        #self.birth_date_year_var.trace("w", lambda *args: self.limiter_symbols(self.birth_date_year_var, self.birth_date_year, 4))
+
+        self.space = tkinter.Label(self.toolbar1, text="")
+        self.space.pack(side=tkinter.LEFT)
+        self.btn_find = ttk.Button(self.toolbar1, text="Шукати").pack(side=tkinter.LEFT)
+        
+        self.space1 = tkinter.Label(self.toolbar1, text="")
+        self.space1.pack(side=tkinter.LEFT)
+		
+        self.btn_clear = ttk.Button(self.toolbar1, text="Очистити")
+        self.btn_clear.pack(side=tkinter.LEFT)
+				
+        self.a = StringVar()
+        self.a.set("")
+        self.label_load = Label(self.toolbar1, textvariable = self.a)
+        self.label_load.pack(side=LEFT)
+        self.scroll_y = Scrollbar(self)   
+        self.scroll_y.pack(side=RIGHT, fill=Y)
+        self.scroll_x = Scrollbar(self, orient=HORIZONTAL)
+        self.scroll_x.pack(side=BOTTOM, fill=X)
+        self.tree = ttk.Treeview(self, yscrollcommand=self.scroll_y.set, xscrollcommand=self.scroll_x.set, height=45, show="headings",
+        					     columns=("NMBR", "0", "1", "2", "3", "4", "5", "7", "8", "9", "10", "11", "20", "21", "22", "23", "24", "25", "27"))
+        self.tree.column("NMBR", width=70, anchor=tkinter.CENTER)
+        self.tree.column("0", width=70, anchor=tkinter.CENTER)
+        self.tree.column("1", width=60, anchor=tkinter.CENTER)
+        self.tree.column("2", width=80, anchor=tkinter.CENTER)
+        self.tree.column("3", width=200, anchor=tkinter.W)
+        self.tree.column("4", width=200, anchor=tkinter.W)
+        self.tree.column("5", width=200, anchor=tkinter.W)
+        self.tree.column("7", width=80, anchor=tkinter.CENTER)
+        self.tree.column("8", width=50, anchor=tkinter.CENTER)
+        self.tree.column("9", width=50, anchor=tkinter.CENTER)
+        self.tree.column("10", width=200, anchor=tkinter.CENTER)
+        self.tree.column("11", width=200, anchor=tkinter.W) 
+        self.tree.column("20", width=80, anchor=tkinter.CENTER)
+        self.tree.column("21", width=50, anchor=tkinter.CENTER)
+        self.tree.column("22", width=60, anchor=tkinter.CENTER)
+        self.tree.column("23", width=50, anchor=tkinter.CENTER)
+        self.tree.column("24", width=30, anchor=tkinter.CENTER)
+        self.tree.column("25", width=70, anchor=tkinter.CENTER)
+        self.tree.column("27", width=50, anchor=tkinter.CENTER)
+        self.tree.heading("NMBR", text="№ комісії")
+        self.tree.heading("0", text="Код")
+        self.tree.heading("1", text="Вид огл.")
+        self.tree.heading("2", text="Дата огл.")
+        self.tree.heading("3", text="Прізвище")
+        self.tree.heading("4", text="Ім'я")
+        self.tree.heading("5", text="По батьк.")
+        self.tree.heading("7", text="Дата нар.")
+        self.tree.heading("8", text="Місто")
+        self.tree.heading("9", text="Район")
+        self.tree.heading("10", text="Село")
+        self.tree.heading("11", text="Вулиця")
+        self.tree.heading("20", text="Попер.група")
+        self.tree.heading("21", text="Мета")
+        self.tree.heading("22", text="Результ.")
+        self.tree.heading("23", text="Строк")
+        self.tree.heading("24", text="%")
+        self.tree.heading("25", text="Причина")
+        self.tree.heading("27", text="Шифр")
+        self.tree.pack(side=LEFT)
+        self.scroll_y.config(command=self.tree.yview)
+        self.scroll_x.config(command=self.tree.xview)
+        
+        self.grab_set()
+        self.focus_set()
+        
+        
 if __name__ == "__main__":
     root = tkinter.Tk()
     main_window = Main_window(root)
