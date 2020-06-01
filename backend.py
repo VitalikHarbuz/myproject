@@ -1,4 +1,5 @@
 import sqlite3
+from os import getcwd, listdir
 
 """
 (0, 'kod', 'TEXT'), 
@@ -175,8 +176,41 @@ class DB:
 		self.conn.close()
 		print('РЕДАГОВАНО')
 
-	def finder(self):
-		pass
+
+	def finder(self, num_msek, tree, first_name, name, birth_date):
+
+		[tree.delete(row) for row in tree.get_children()]
+
+		if num_msek == 0:
+			"""path = getcwd()
+			print(path)
+			dir_list = listdir(path = path)
+			for file in dir_list:
+				print(file)
+				self.conn = sqlite3.connect('{}'.format(file))
+				self.cur = self.conn.cursor()
+
+				self.find = self.cur.execute('''SELECT kod, oglad, datezakl, famil, name, tato, rod, kodsity, kodraion, selo, street, grupinv, toglad, 
+												grupinv, toglad, roglad, invalid, poteri, prichin, diagnoz FROM db WHERE famil LIKE ? AND name LIKE ? AND rod LIKE ?''', 
+												[first_name+'%', name+'%', birth_date])
+				for row in self.find.fetchall():
+					row = list(row)
+					row.insert(0, file)	
+					tree.insert('', 'end', values = row)"""
+			pass
+
+		elif num_msek != 0:
+			self.conn = sqlite3.connect('db_{}.db'.format(num_msek))
+			self.cur = self.conn.cursor()
+			self.find = self.cur.execute('''SELECT kod, oglad, datezakl, famil, name, tato, rod, kodsity, kodraion, selo, street, grupinv, toglad,
+									        grupinv, toglad, roglad, invalid, poteri, prichin, diagnoz FROM db WHERE famil LIKE ? AND name LIKE ? AND rod LIKE ?''', 
+							                [first_name+'%', name+'%', str(birth_date)+'%'])
+			for row in self.find.fetchall():
+				row = list(row)
+				row.insert(0, num_msek)	
+				tree.insert('', 'end', values = row)
+			
+			
 
 
 if __name__ == "__main__":

@@ -36,7 +36,7 @@ f_name = "КУШНІР"
 name = "ВАСИЛЬ"
 surname = "ВАСИЛЬОВИЧ"
 
-conn = sqlite3.connect('db_1.db')
+conn = sqlite3.connect('db_2.db')
 cur = conn.cursor()
 exe = cur.execute("""SELECT * FROM db""")
 [print(row, '\n') for row in exe.fetchall()]

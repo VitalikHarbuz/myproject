@@ -419,7 +419,7 @@ class Append_window(tkinter.Toplevel):
                                                                         self.oglad_var.get(), 
                                                                         datetime.date(int(self.data_ogl_year_var.get()), int(self.data_ogl_mount_var.get()), int(self.data_ogl_day_var.get())),    
                                                                         self.first_name.get(), self.name.get(), self.surname.get(), self.sex_var.get(), 
-                                                                        datetime.date(int(self.birth_date_day_var.get()), int(self.birth_date_mount_var.get()), int(self.birth_date_year_var.get())),
+                                                                        datetime.date(int(self.birth_date_year_var.get()), int(self.birth_date_mount_var.get()), int(self.birth_date_day_var.get())),
                                                                         self.sity.get(), self.raion.get(), self.selo.get(),self.street.get(), self.work_var.get(), self.social.get(),
                                                                         self.special.get(), self.osvita.get(), self.diagnoz_1.get(), self.zaklad.get(), self.uskladn.get(), self.misce_ogl.get(), 
                                                                         self.pop_grupa_A.get(), self.pop_grupa_B.get(), self.meta.get(), self.vstan_grupa_A.get(), self.vstan_grupa_B.get(), 
@@ -438,7 +438,7 @@ class Append_window(tkinter.Toplevel):
                                                                     self.oglad_var.get(), 
                                                                     datetime.date(int(self.data_ogl_year_var.get()), int(self.data_ogl_mount_var.get()), int(self.data_ogl_day_var.get())),   
                                                                     self.first_name.get(), self.name.get(), self.surname.get(), self.sex_var.get(), 
-                                                                    datetime.date(int(self.birth_date_day_var.get()), int(self.birth_date_mount_var.get()), int(self.birth_date_year_var.get())),
+                                                                    datetime.date(int(self.birth_date_year_var.get()), int(self.birth_date_mount_var.get()), int(self.birth_date_day_var.get())),
                                                                     self.sity.get(), 
                                                                     self.raion.get(), 
                                                                     self.selo.get(),
@@ -542,14 +542,21 @@ class Finder_window(tkinter.Toplevel):
 
         self.space = tkinter.Label(self.toolbar1, text="")
         self.space.pack(side=tkinter.LEFT)
-        self.btn_find = ttk.Button(self.toolbar1, text="Шукати").pack(side=tkinter.LEFT)
-        
+        self.btn_find = ttk.Button(self.toolbar1, text="Шукати")
+        self.btn_find.pack(side=tkinter.LEFT)
+        self.btn_find.bind("<Button-1>", lambda event: db.finder([k for k, v in self.DICT_KOMIS.items() if v == self.komis.get()][0],
+                                                                 self.tree,
+                                                                 self.first_name_var.get().upper(),
+                                                                 self.name_var.get().upper(), 
+                                                                 datetime.date(int(self.birth_date_year_var.get()),
+                                                                               int(self.birth_date_mount_var.get()),
+                                                                               int(self.birth_date_day_var.get()))))
         self.space1 = tkinter.Label(self.toolbar1, text="")
         self.space1.pack(side=tkinter.LEFT)
 		
         self.btn_clear = ttk.Button(self.toolbar1, text="Очистити")
         self.btn_clear.pack(side=tkinter.LEFT)
-				
+        
         self.a = StringVar()
         self.a.set("")
         self.label_load = Label(self.toolbar1, textvariable = self.a)
@@ -560,25 +567,25 @@ class Finder_window(tkinter.Toplevel):
         self.scroll_x.pack(side=BOTTOM, fill=X)
         self.tree = ttk.Treeview(self, yscrollcommand=self.scroll_y.set, xscrollcommand=self.scroll_x.set, height=45, show="headings",
         					     columns=("NMBR", "0", "1", "2", "3", "4", "5", "7", "8", "9", "10", "11", "20", "21", "22", "23", "24", "25", "27"))
-        self.tree.column("NMBR", width=70, anchor=tkinter.CENTER)
-        self.tree.column("0", width=70, anchor=tkinter.CENTER)
-        self.tree.column("1", width=60, anchor=tkinter.CENTER)
-        self.tree.column("2", width=80, anchor=tkinter.CENTER)
-        self.tree.column("3", width=200, anchor=tkinter.W)
-        self.tree.column("4", width=200, anchor=tkinter.W)
-        self.tree.column("5", width=200, anchor=tkinter.W)
-        self.tree.column("7", width=80, anchor=tkinter.CENTER)
-        self.tree.column("8", width=50, anchor=tkinter.CENTER)
-        self.tree.column("9", width=50, anchor=tkinter.CENTER)
-        self.tree.column("10", width=200, anchor=tkinter.CENTER)
-        self.tree.column("11", width=200, anchor=tkinter.W) 
-        self.tree.column("20", width=80, anchor=tkinter.CENTER)
-        self.tree.column("21", width=50, anchor=tkinter.CENTER)
-        self.tree.column("22", width=60, anchor=tkinter.CENTER)
-        self.tree.column("23", width=50, anchor=tkinter.CENTER)
-        self.tree.column("24", width=30, anchor=tkinter.CENTER)
-        self.tree.column("25", width=70, anchor=tkinter.CENTER)
-        self.tree.column("27", width=50, anchor=tkinter.CENTER)
+        self.tree.column("NMBR", width=70, anchor=tkinter.CENTER, stretch=NO)
+        self.tree.column("0", width=70, anchor=tkinter.CENTER, stretch=NO)
+        self.tree.column("1", width=60, anchor=tkinter.CENTER, stretch=NO)
+        self.tree.column("2", width=80, anchor=tkinter.CENTER, stretch=NO)
+        self.tree.column("3", width=200, anchor=tkinter.W, stretch=NO)
+        self.tree.column("4", width=200, anchor=tkinter.W, stretch=NO)
+        self.tree.column("5", width=200, anchor=tkinter.W, stretch=NO)
+        self.tree.column("7", width=80, anchor=tkinter.CENTER, stretch=NO)
+        self.tree.column("8", width=50, anchor=tkinter.CENTER, stretch=NO)
+        self.tree.column("9", width=50, anchor=tkinter.CENTER, stretch=NO)
+        self.tree.column("10", width=200, anchor=tkinter.CENTER, stretch=NO)
+        self.tree.column("11", width=200, anchor=tkinter.W, stretch=NO) 
+        self.tree.column("20", width=80, anchor=tkinter.CENTER, stretch=NO)
+        self.tree.column("21", width=50, anchor=tkinter.CENTER, stretch=NO)
+        self.tree.column("22", width=60, anchor=tkinter.CENTER, stretch=NO)
+        self.tree.column("23", width=50, anchor=tkinter.CENTER, stretch=NO)
+        self.tree.column("24", width=30, anchor=tkinter.CENTER, stretch=NO)
+        self.tree.column("25", width=70, anchor=tkinter.CENTER, stretch=NO)
+        self.tree.column("27", width=50, anchor=tkinter.CENTER, stretch=NO)
         self.tree.heading("NMBR", text="№ комісії")
         self.tree.heading("0", text="Код")
         self.tree.heading("1", text="Вид огл.")
