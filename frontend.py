@@ -505,14 +505,14 @@ class Finder_window(tkinter.Toplevel):
         self.komis.current(0)
         self.komis.pack(side=tkinter.LEFT)
         
-        self.sex = ttk.Label(self.toolbar1, text='Стать', font = self.font_style)
-        self.sex.pack(side=tkinter.LEFT)
-        self.sex_var = IntVar()
-        self.sex_var.set(1)
-        self.men = ttk.Radiobutton(self.toolbar1, text='ЧОЛОВІК', variable=self.sex_var, value=1)
-        self.men.pack(side=tkinter.LEFT)
-        self.women = ttk.Radiobutton(self.toolbar1, text='ЖІНКА', variable=self.sex_var, value=2)
-        self.women.pack(side=tkinter.LEFT)
+        #self.sex = ttk.Label(self.toolbar1, text='Стать', font = self.font_style)
+        #self.sex.pack(side=tkinter.LEFT)
+        #self.sex_var = IntVar()
+        #self.sex_var.set(1)
+        #self.men = ttk.Radiobutton(self.toolbar1, text='ЧОЛОВІК', variable=self.sex_var, value=1)
+        #self.men.pack(side=tkinter.LEFT)
+        #self.women = ttk.Radiobutton(self.toolbar1, text='ЖІНКА', variable=self.sex_var, value=2)
+        #self.women.pack(side=tkinter.LEFT)
         
         self.label_first_name = ttk.Label(self.toolbar1, text='Прізвище', font = self.font_style).pack(side=tkinter.LEFT)
         self.first_name_var = StringVar()
@@ -556,6 +556,15 @@ class Finder_window(tkinter.Toplevel):
 		
         self.btn_clear = ttk.Button(self.toolbar1, text="Очистити")
         self.btn_clear.pack(side=tkinter.LEFT)
+        self.btn_clear.bind("<Button-1>", lambda event: self.clear_all(self.tree,
+                                                                       self.first_name, 
+                                                                       self.name, 
+                                                                       self.birth_date_day,
+                                                                       self.birth_date_mount,
+                                                                       self.birth_date_year))
+
+
+
         
         self.a = StringVar()
         self.a.set("")
@@ -565,7 +574,7 @@ class Finder_window(tkinter.Toplevel):
         self.scroll_y.pack(side=RIGHT, fill=Y)
         self.scroll_x = Scrollbar(self, orient=HORIZONTAL)
         self.scroll_x.pack(side=BOTTOM, fill=X)
-        self.tree = ttk.Treeview(self, yscrollcommand=self.scroll_y.set, xscrollcommand=self.scroll_x.set, height=45, show="headings",
+        self.tree = ttk.Treeview(self, yscrollcommand=self.scroll_y.set, xscrollcommand=self.scroll_x.set, height=50, show="headings",
         					     columns=("NMBR", "0", "1", "2", "3", "4", "5", "7", "8", "9", "10", "11", "20", "21", "22", "23", "24", "25", "27"))
         self.tree.column("NMBR", width=70, anchor=tkinter.CENTER, stretch=NO)
         self.tree.column("0", width=70, anchor=tkinter.CENTER, stretch=NO)
@@ -611,7 +620,16 @@ class Finder_window(tkinter.Toplevel):
         
         self.grab_set()
         self.focus_set()
-        
+
+
+    def clear_all(self, *args):
+        [args[0].delete(row) for row in args[0].get_children()]
+        args[1].delete(0, END)
+        args[2].delete(0, END)
+        args[3].delete(0, END)
+        args[4].delete(0, END)
+        args[5].delete(0, END)
+
         
 if __name__ == "__main__":
     root = tkinter.Tk()
