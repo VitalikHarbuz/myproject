@@ -483,6 +483,7 @@ class Finder_window(tkinter.Toplevel):
     def __init__(self):
         super().__init__(root)
         self.font_style = ('helvetica', 12, 'bold')
+        self.Append_window = Append_window
         self.init_finder_window()
 
 
@@ -510,9 +511,7 @@ class Finder_window(tkinter.Toplevel):
         self.first_name_var = StringVar()
         self.first_name = ttk.Entry(self.toolbar1, font = self.font_style, textvariable = self.first_name_var)
         self.first_name.pack(side=tkinter.LEFT)
-        
-        #self.first_name_var.trace("w", lambda *args: self.limiter_symbols(self.first_name_var, self.first_name, 20))
-        
+        self.first_name_var.trace("w", lambda *args: self.limiter_symbols(self.first_name_var, self.first_name, 20))
         """ІМЯ"""
         self.label_name = ttk.Label(self.toolbar1, text='Ім\'я', font = self.font_style).pack(side=tkinter.LEFT)
         self.name_var = StringVar()
@@ -524,18 +523,15 @@ class Finder_window(tkinter.Toplevel):
         self.birth_date_day_var = StringVar()
         self.birth_date_day = ttk.Entry(self.toolbar1, font = self.font_style, width=3, textvariable = self.birth_date_day_var)
         self.birth_date_day.pack(side=tkinter.LEFT)
-        #self.birth_date_day_var.trace("w", lambda *args: self.limiter_symbols(self.birth_date_day_var, self.birth_date_day, 2))
-        
+        self.birth_date_day_var.trace("w", lambda *args: self.limiter_symbols(self.birth_date_day_var, self.birth_date_day, 2))
         self.birth_date_mount_var = StringVar()
         self.birth_date_mount = ttk.Entry(self.toolbar1, font = self.font_style, width=3, textvariable = self.birth_date_mount_var)
         self.birth_date_mount.pack(side=tkinter.LEFT)
-        #self.birth_date_mount_var.trace("w", lambda *args: self.limiter_symbols(self.birth_date_mount_var, self.birth_date_mount, 2))
-        
+        self.birth_date_mount_var.trace("w", lambda *args: self.limiter_symbols(self.birth_date_mount_var, self.birth_date_mount, 2))
         self.birth_date_year_var = StringVar()
         self.birth_date_year = ttk.Entry(self.toolbar1, font = self.font_style, width=5, textvariable = self.birth_date_year_var)
         self.birth_date_year.pack(side=tkinter.LEFT)
-        #self.birth_date_year_var.trace("w", lambda *args: self.limiter_symbols(self.birth_date_year_var, self.birth_date_year, 4))
-
+        self.birth_date_year_var.trace("w", lambda *args: self.limiter_symbols(self.birth_date_year_var, self.birth_date_year, 4))
         self.space = tkinter.Label(self.toolbar1, text="")
         self.space.pack(side=tkinter.LEFT)
         self.btn_find = ttk.Button(self.toolbar1, text="Шукати")
@@ -649,6 +645,13 @@ class Finder_window(tkinter.Toplevel):
         
         self.grab_set()
         self.focus_set()
+
+
+    def limiter_symbols(self, Entry_var, Entry, count_sumbol):
+        if len(Entry.get()) > 0:
+            Entry_var.set(Entry_var.get()[:count_sumbol])
+        if len(Entry.get()) == count_sumbol:
+            press('tab')
 
 
     def clear_all(self, *args):
