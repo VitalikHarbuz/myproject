@@ -156,10 +156,7 @@ class DB:
 			message_var.set('ВІДСУТНІЙ В БД')
 
 
-
-
 	def edit_talon(self, num_msek, *args):
-		print(args[2])
 		self.conn = sqlite3.connect('db_{}.db'.format(num_msek))
 		self.cur = self.conn.cursor()
 		self.edit = self.cur.execute('''UPDATE db SET kod=?, oglad=?, datezakl=?, famil=?, name=?, tato=?, pol=?, rod=?, kodsity=?, kodraion=?, 
@@ -182,29 +179,33 @@ class DB:
 		[tree.delete(row) for row in tree.get_children()]
 
 		if num_msek == 0:
-			path = getcwd() + '/db_files'
-			print(path)
+			path = getcwd() + '/db_files/'
 			dir_list = listdir(path = path)
-			print(dir_list)
 			for file in dir_list:
-				print(path + '/' + file)
-				self.conn = sqlite3.connect('{}'.format(path + '/' + file))
+				self.conn = sqlite3.connect('{}'.format(path + file))
 				self.cur = self.conn.cursor()
 
-				self.find = self.cur.execute('''SELECT kod, oglad, datezakl, famil, name, tato, rod, kodsity, kodraion, selo, street, grupinv, toglad, 
-												grupinv, toglad, roglad, invalid, poteri, prichin, diagnoz FROM db WHERE famil LIKE ? AND name LIKE ? AND rod LIKE ?''', 
-												[first_name+'%', name+'%', birth_date])
+				self.find = self.cur.execute('''SELECT kod, oglad, datezakl, famil, name, tato, pol, rod, kodsity, kodraion, 
+												selo, street, woker, social, special, mesto, ministr, organ, lpu,
+												moglad, grupinv, grupinvi, toglad, roglad, rogladi, invalid, poteri, prichin, faktor, diagnoz, expert,
+												rebwork, rebhelp, prog2, prog3 FROM db WHERE famil LIKE ? AND name LIKE ? AND rod LIKE ?''', 
+												[first_name+'%', name+'%', str(birth_date)+'%'])
 				for row in self.find.fetchall():
 					row = list(row)
-					row.insert(0, file)	
+					row.insert(0, file)
 					tree.insert('', 'end', values = row)
 
 		elif num_msek != 0:
-			self.conn = sqlite3.connect('db_{}.db'.format(num_msek))
+
+			path = getcwd() + '/db_files/'
+
+			self.conn = sqlite3.connect(path + 'db_{}.db'.format(num_msek))
 			self.cur = self.conn.cursor()
-			self.find = self.cur.execute('''SELECT kod, oglad, datezakl, famil, name, tato, rod, kodsity, kodraion, selo, street, grupinv, toglad,
-									        grupinv, toglad, roglad, invalid, poteri, prichin, diagnoz FROM db WHERE famil LIKE ? AND name LIKE ? AND rod LIKE ?''', 
-							                [first_name+'%', name+'%', str(birth_date)+'%'])
+			self.find = self.cur.execute('''SELECT kod, oglad, datezakl, famil, name, tato, pol, rod, kodsity, kodraion, 
+											selo, street, woker, social, special, mesto, ministr, organ, lpu,
+											moglad, grupinv, grupinvi, toglad, roglad, rogladi, invalid, poteri, prichin, faktor, diagnoz, expert,
+											rebwork, rebhelp, prog2, prog3 FROM db WHERE famil LIKE ? AND name LIKE ? AND rod LIKE ?''', 
+											[first_name+'%', name+'%', str(birth_date)+'%'])
 			for row in self.find.fetchall():
 				row = list(row)
 				row.insert(0, num_msek)
