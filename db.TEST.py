@@ -1,4 +1,6 @@
 import sqlite3
+from os import getcwd, listdir
+
 
 """[(0, 'kod', 'TEXT', 0, None, 0), (1, 'oglad', 'INTEGER', 0, None, 0), (2, 'datezakl', 'TEXT', 0, None, 0), (3, 'famil', 'TEXT', 0, None, 0), (4, 'name', 'TEXT', 0, None, 0), 
 (5, 'tato', 'TEXT', 0, None, 0), (6, 'pol', 'INTEGER', 0, None, 0), (7, 'rod', 'TEXT', 0, None, 0), (8, 'kodsity', 'INTEGER', 0, None, 0), (9, 'kodraion', 'INTEGER', 0, None, 0), 
@@ -11,8 +13,8 @@ import sqlite3
 (36, 'prog3', 'TEXT', 0, None, 0), (37, 'poterist', 'TEXT', 0, None, 0), (38, 'prre', 'TEXT', 0, None, 0), (39, 'rogladi', 'INTEGER', 0, None, 0), 
 (40, 'tran', 'TEXT', 0, None, 0), (41, 'grupinvi', 'TEXT', 0, None, 0)]"""
 #cur.execute("""PRAGMA table_info(db)""") #переглянути список стовпців в таблиці
-conn = sqlite3.connect('db_1.db')
-cur = conn.cursor()
+"""conn = sqlite3.connect('db_1.db')
+cur = conn.cursor()"""
 
 '''ins = cur.execute("""INSERT INTO TABLE db(kod, oglad, datezakl, famil, name, tato, pol, rod, kodsity, kodraion, 
                                           selo, street, woker, social, special, mesto, ministr, organ, lpu, moglad, 
@@ -36,7 +38,9 @@ f_name = "КУШНІР"
 name = "ВАСИЛЬ"
 surname = "ВАСИЛЬОВИЧ"
 
-conn = sqlite3.connect('db_2.db')
+path = getcwd() + '/db_files/'
+print(path)
+conn = sqlite3.connect(path + 'db_1.db')
 cur = conn.cursor()
 exe = cur.execute("""SELECT * FROM db""")
 [print(row, '\n') for row in exe.fetchall()]

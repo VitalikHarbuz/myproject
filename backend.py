@@ -54,7 +54,8 @@ class DB:
 
 	def append_talon(self, num_msek, *args):
 		if num_msek != 0 and args[0] != '':	#args[0] - це КОД ТАЛОНУ
-			self.conn = sqlite3.connect('db_{}.db'.format(num_msek))
+			self.path = getcwd() + '/db_files/'
+			self.conn = sqlite3.connect(self.path + 'db_{}.db'.format(num_msek))
 			self.cur = self.conn.cursor()
 			self.cur.execute('''INSERT INTO db(kod, oglad, datezakl, famil, name, tato, pol, rod, kodsity, kodraion, 
 												selo, street, woker, social, special, mesto, ministr, organ, lpu,
@@ -70,7 +71,8 @@ class DB:
 
 
 	def find_old_talon(self, message_var, num_msek, kod_var, old_kod_var, year_pop_tal_var, oglad_var, *args):
-		self.conn = sqlite3.connect('db_{}.db'.format(num_msek))
+		self.path = getcwd() + '/db_files/'
+		self.conn = sqlite3.connect(self.path + 'db_{}.db'.format(num_msek))
 		self.cur = self.conn.cursor()
 		try:
 			if num_msek != 0 and kod_var != '' and old_kod_var != '' and year_pop_tal_var != '':
@@ -157,7 +159,8 @@ class DB:
 
 
 	def edit_talon(self, num_msek, *args):
-		self.conn = sqlite3.connect('db_{}.db'.format(num_msek))
+		self.path = getcwd() + '/db_files/'
+		self.conn = sqlite3.connect(self.path + 'db_{}.db'.format(num_msek))
 		self.cur = self.conn.cursor()
 		self.edit = self.cur.execute('''UPDATE db SET kod=?, oglad=?, datezakl=?, famil=?, name=?, tato=?, pol=?, rod=?, kodsity=?, kodraion=?, 
 													  selo=?, street=?, woker=?, social=?, special=?, mesto=?, ministr=?, organ=?, lpu=?, moglad=?, 
@@ -179,12 +182,11 @@ class DB:
 		[tree.delete(row) for row in tree.get_children()]
 
 		if num_msek == 0:
-			path = getcwd() + '/db_files/'
-			dir_list = listdir(path = path)
-			for file in dir_list:
-				self.conn = sqlite3.connect('{}'.format(path + file))
+			self.path = getcwd() + '/db_files/'
+			self.dir_list = listdir(path = self.path)
+			for file in self.dir_list:
+				self.conn = sqlite3.connect('{}'.format(self.path + file))
 				self.cur = self.conn.cursor()
-
 				self.find = self.cur.execute('''SELECT kod, oglad, datezakl, famil, name, tato, pol, rod, kodsity, kodraion, 
 												selo, street, woker, social, special, mesto, ministr, organ, lpu,
 												moglad, grupinv, grupinvi, toglad, roglad, rogladi, invalid, poteri, prichin, faktor, diagnoz, expert,
@@ -196,10 +198,8 @@ class DB:
 					tree.insert('', 'end', values = row)
 
 		elif num_msek != 0:
-
-			path = getcwd() + '/db_files/'
-
-			self.conn = sqlite3.connect(path + 'db_{}.db'.format(num_msek))
+			self.path = getcwd() + '/db_files/'
+			self.conn = sqlite3.connect(self.path + 'db_{}.db'.format(num_msek))
 			self.cur = self.conn.cursor()
 			self.find = self.cur.execute('''SELECT kod, oglad, datezakl, famil, name, tato, pol, rod, kodsity, kodraion, 
 											selo, street, woker, social, special, mesto, ministr, organ, lpu,

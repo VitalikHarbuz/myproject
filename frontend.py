@@ -463,7 +463,8 @@ class Append_window(tkinter.Toplevel):
                                                                     self.diagnoz_2.get(), 
                                                                     self.expert.get(),
                                                                     '-'.join((str(self.rek_prac_1_var.get()), str(self.rek_prac_2_var.get()), str(self.rek_prac_3_var.get()))).strip(),
-                                                                    '-'.join((str(self.teh_zas_1_var.get()), str(self.teh_zas_2_var.get()), str(self.teh_zas_3_var.get()), str(self.teh_zas_4_var.get()), str(self.teh_zas_5_var.get()), str(self.teh_zas_6_var.get()), str(self.teh_zas_7_var.get()), str(self.teh_zas_8_var.get()))).strip(),
+                                                                    '-'.join((str(self.teh_zas_1_var.get()), str(self.teh_zas_2_var.get()), str(self.teh_zas_3_var.get()), str(self.teh_zas_4_var.get()),
+                                                                              str(self.teh_zas_5_var.get()), str(self.teh_zas_6_var.get()), str(self.teh_zas_7_var.get()), str(self.teh_zas_8_var.get()))).strip(),
                                                                     self.prog_reab_var.get(), 
                                                                     self.prac.get()))
         self.grab_set()
@@ -510,7 +511,7 @@ class Finder_window(tkinter.Toplevel):
         self.first_name = ttk.Entry(self.toolbar1, font = self.font_style, textvariable = self.first_name_var)
         self.first_name.pack(side=tkinter.LEFT)
         
-        self.first_name_var.trace("w", lambda *args: self.limiter_symbols(self.first_name_var, self.first_name, 20))
+        #self.first_name_var.trace("w", lambda *args: self.limiter_symbols(self.first_name_var, self.first_name, 20))
         
         """ІМЯ"""
         self.label_name = ttk.Label(self.toolbar1, text='Ім\'я', font = self.font_style).pack(side=tkinter.LEFT)
