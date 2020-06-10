@@ -212,6 +212,19 @@ class DB:
 				tree.insert('', 'end', values = row)
 
 
+	def delete_talon(self, num_msek, kod_var, date_ogl):
+		if num_msek == 0:
+			pass
+		elif num_msek != 0 and kod_var != '' and date_ogl != '':
+				self.path = getcwd() + '/db_files/'
+				self.conn = sqlite3.connect(self.path + 'db_{}.db'.format(num_msek))
+				self.cur = self.conn.cursor()
+				self.delete = self.cur.execute('''DELETE FROM db WHERE kod=? AND datezakl=?''', (kod_var, date_ogl)) 
+				self.conn.commit()
+				self.cur.close()
+				self.conn.close()
+
+
 if __name__ == "__main__":
 
 	db = DB()

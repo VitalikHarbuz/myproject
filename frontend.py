@@ -38,9 +38,6 @@ class Main_window(tkinter.Frame):
         self.search_img = tkinter.PhotoImage(file='search.png')
         btn_search_dialog = tkinter.Button(text='Пошук', bd=2, command=self.find_dialog, image=self.search_img)
         btn_search_dialog.place(x=500, y=300)
-        self.edit_img = tkinter.PhotoImage(file='edit.png')
-        btn_edit_dialog = tkinter.Button(text='Редагувати', bd=2, command=self.edit_dialog, image=self.edit_img)
-        btn_edit_dialog.place(x=800, y=300)
         self.delete_img = tkinter.PhotoImage(file='delete.png')
         btn_delete_dialog = tkinter.Button(text='Видалити', bd=2, command=self.delete_dialog, image=self.delete_img)
         btn_delete_dialog.place(x=1100, y=300)
@@ -54,11 +51,8 @@ class Main_window(tkinter.Frame):
     def find_dialog(self):
         Finder_window()
 
-    def edit_dialog(self):
-        pass
-
     def delete_dialog(self):
-        pass
+        Delete_window()
     
     def quit_dialog(self):
         answer = mb.askyesno(title='Вийти', message='Дійсно бажаєте вийти?')
@@ -483,7 +477,6 @@ class Finder_window(tkinter.Toplevel):
     def __init__(self):
         super().__init__(root)
         self.font_style = ('helvetica', 12, 'bold')
-        self.Append_window = Append_window
         self.init_finder_window()
 
 
@@ -601,7 +594,6 @@ class Finder_window(tkinter.Toplevel):
         self.tree.column("32", width=70, anchor=tkinter.CENTER, stretch=NO)
         self.tree.column("33", width=70, anchor=tkinter.CENTER, stretch=NO)
         self.tree.column("34", width=70, anchor=tkinter.CENTER, stretch=NO)
-
         self.tree.heading("NMBR", text="№ комісії")
         self.tree.heading("0", text="Код")
         self.tree.heading("1", text="Вид огл.")
@@ -638,7 +630,6 @@ class Finder_window(tkinter.Toplevel):
         self.tree.heading("32", text="Соц.реаб.")
         self.tree.heading("33", text="Ефект.реаб.")
         self.tree.heading("34", text="Працевл.")
-
         self.tree.pack(side=LEFT)
         self.scroll_y.config(command=self.tree.yview)
         self.scroll_x.config(command=self.tree.xview)
@@ -662,7 +653,69 @@ class Finder_window(tkinter.Toplevel):
         args[4].delete(0, END)
         args[5].delete(0, END)
 
-        
+     
+class Delete_window(tkinter.Toplevel):
+    #ВІКНО ВИДАЛЕННЯ ТАЛОНУ
+    def __init__(self):
+        super().__init__(root)
+        self.font_style = ('helvetica', 12, 'bold')
+        self.init_delete_window()
+
+
+    def init_delete_window(self):
+        self.title('Видалення талону')
+        w = 350
+        h = 300
+        x = (main_window.winfo_screenwidth() // 2) - (w // 2)
+        y = (main_window.winfo_screenheight() // 2 - 30) - (h // 2)
+        self.geometry('{}x{}+{}+{}'.format(w, h, x, y))
+        self.resizable(False, False)
+        #ВИБІР КОМІСІЇ
+        self.DICT_KOMIS = {0:'--', 1:'Обласна', 2:'Міськміжрайонна', 3:'Калуська', 4:'Коломийська', 5:'Кардіологічна', 6:'Міська',
+                           7:'Травматологічна', 8:'Психіатрична', 9:'Фтизіо-пульмонологічна', 10:'Міжрайонна', 11:'Коломия №2'}
+        self.label_komis = ttk.Label(self, text='Вибір комісії', font = self.font_style).place(x=10, y=10)
+        self.komis = ttk.Combobox(self, values=[self.DICT_KOMIS[i] for i in self.DICT_KOMIS], font = self.font_style)
+        self.komis.current(0)
+        self.komis.place(x=130, y=10)
+        #КОД ТАЛОНУ
+        self.label_kod = ttk.Label(self, text='Код талону', font = self.font_style).place(x=10, y=80)
+        self.kod_var = StringVar()
+        self.kod = ttk.Entry(self, font = self.font_style, width=7, textvariable = self.kod_var)
+        self.kod.place(x=130, y=80)
+        self.kod_var.trace("w", lambda *args: self.limiter_symbols(self.kod_var, self.kod, 6))
+        #ДАТА ОГЛЯДУ
+        self.label_data_ogl =  ttk.Label(self, text='Дата огляду', font = self.font_style).place(x=10, y=150)
+        self.data_ogl_day_var = StringVar()
+        self.data_ogl_day = ttk.Entry(self, font = self.font_style, width=3, textvariable = self.data_ogl_day_var)
+        self.data_ogl_day.place(x=130, y=150)
+        self.data_ogl_day_var.trace("w", lambda *args: self.limiter_symbols(self.data_ogl_day_var, self.data_ogl_day, 2))
+        self.data_ogl_mount_var = StringVar()
+        self.data_ogl_mount = ttk.Entry(self, font = self.font_style, width=3, textvariable = self.data_ogl_mount_var)
+        self.data_ogl_mount.place(x=165, y=150)
+        self.data_ogl_mount_var.trace("w", lambda *args: self.limiter_symbols(self.data_ogl_mount_var, self.data_ogl_mount, 2))
+        self.data_ogl_year_var = StringVar()
+        self.data_ogl_year = ttk.Entry(self, font = self.font_style, width=5, textvariable = self.data_ogl_year_var)
+        self.data_ogl_year.place(x=200, y=150)
+        self.data_ogl_year_var.trace("w", lambda *args: self.limiter_symbols(self.data_ogl_year_var, self.data_ogl_year, 4))
+        #КНОПКА ВИДАЛИТИ
+        self.btn_find_pop_tal = ttk.Button(self, text='ВИДАЛИТИ')
+        self.btn_find_pop_tal.place(x=140, y=240)
+        self.btn_find_pop_tal.bind('<Button-1>', lambda event: db.delete_talon([k for k, v in self.DICT_KOMIS.items() if v == self.komis.get()][0],
+                                                                               [self.kod.get().upper() + ' ' * (8 - len(self.kod.get())) if len(self.kod.get()) <= 8 else self.kod.get().upper()][0], 
+                                                                               datetime.date(int(self.data_ogl_year_var.get()), 
+                                                                                             int(self.data_ogl_mount_var.get()), 
+                                                                                             int(self.data_ogl_day_var.get()))))
+        self.grab_set()
+        self.focus_set()
+
+
+    def limiter_symbols(self, Entry_var, Entry, count_sumbol):
+        if len(Entry.get()) > 0:
+            Entry_var.set(Entry_var.get()[:count_sumbol])
+        if len(Entry.get()) == count_sumbol:
+            press('tab')
+
+
 if __name__ == "__main__":
     root = tkinter.Tk()
     main_window = Main_window(root)
