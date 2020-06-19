@@ -180,8 +180,11 @@ class Append_window(tkinter.Toplevel):
         self.sity.current(0)
         self.sity.place(x=160, y=345)
         """РАЙОН"""
+        self.DICT_RAION = {0:'--', 1:'Богородчанський', 2:'Верховинський', 3:'Галицький', 4:'Городенківський', 5:'Долинський', 6:'Калуський',
+                        7:'Коломийський', 8:'Косівський', 9:'Надвірнянський', 10:'Рогатинський', 11:'Рожнятівський', 12:'Снятинський', 13:'Тисменицький',
+                        14:'Тлумацький'}
         self.label_raion = ttk.Label(self, text='Район', font = self.font_style).place(x=10, y=380)
-        self.raion = ttk.Combobox(self, values=['--', 'Богородчанський'], font = self.font_style)
+        self.raion = ttk.Combobox(self, values=[self.DICT_RAION[i] for i in self.DICT_RAION], font = self.font_style)
         self.raion.current(0)
         self.raion.place(x=160, y=380)
         """СЕЛО"""
