@@ -127,7 +127,7 @@ class Append_window(tkinter.Toplevel):
                                                                                 #___ПЕРША_ПОЛОВИНА
                                                                                 self.sex_var, self.first_name_var, self.name_var, self.surname_var, 
                                                                                 self.birth_date_day_var, self.birth_date_mount_var, self.birth_date_year_var, 
-                                                                                self.sity, self.raion, self.selo, self.street_var, self.work_var,
+                                                                                self.city, self.raion, self.selo, self.street_var, self.work_var,
                                                                                 self.social_var, self.special_var, self.osvita_var, self.diagnoz_1_var,
                                                                                 self.uskladn_var, self.zaklad_var,# args[17] - ЦЕ "zaklad_var"
                                                                                 #___ДРУГА_ПОЛОВИНА
@@ -180,19 +180,18 @@ class Append_window(tkinter.Toplevel):
         self.birth_date_year_var.trace("w", lambda *args: self.limiter_symbols(self.birth_date_year_var, self.birth_date_year, 4))
         
         """МІСТО"""
-        self.DICT_CITY = {1:'Івано-Франківськ', 2:'ІНШЕ'}
+        self.DICT_CITY = {0:'--', 1:'Івано-Франківськ', 16:'Болехів', 17:'Яремче', 41:'Бурштин', 2:'ІНШЕ'}
         self.label_city = ttk.Label(self, text='Місто', font = self.font_style).place(x=10, y=345)
-        self.sity = ttk.Combobox(self, values=[self.DICT_CITY[i] for i in self.DICT_CITY], font = self.font_style)
-        #self.sity.current(0)
-        self.sity.place(x=160, y=345)
-        
+        self.city = ttk.Combobox(self, values=[self.DICT_CITY[i] for i in self.DICT_CITY], font = self.font_style)
+        self.city.current(0)
+        self.city.place(x=160, y=345)
         """РАЙОН"""
-        self.DICT_RAION = {1:'Богородчанський', 2:'Верховинський', 3:'Галицький', 4:'Городенківський', 5:'Долинський', 6:'Калуський',7:'Коломийський',
+        self.DICT_RAION = {0:'--', 1:'Богородчанський', 2:'Верховинський', 3:'Галицький', 4:'Городенківський', 5:'Долинський', 6:'Калуський',7:'Коломийський',
                            8:'Косівський', 9:'Надвірнянський', 10:'Рогатинський', 11:'Рожнятівський', 12:'Снятинський', 13:'Тисменицький', 14:'Тлумацький'}
         self.label_raion = ttk.Label(self, text='Район', font = self.font_style).place(x=10, y=380)
         self.raion = ttk.Combobox(self, values=[self.DICT_RAION[i] for i in self.DICT_RAION], font = self.font_style)
+        self.raion.current(0)
         self.raion.place(x=160, y=380)
-        
         """СЕЛО"""
         self.label_selo = ttk.Label(self, text='Село', font = self.font_style).place(x=10, y=415)
         self.selo_var = StringVar() 
@@ -424,7 +423,9 @@ class Append_window(tkinter.Toplevel):
                                                                         datetime.date(int(self.data_ogl_year_var.get()), int(self.data_ogl_mount_var.get()), int(self.data_ogl_day_var.get())),    
                                                                         self.first_name.get(), self.name.get(), self.surname.get(), self.sex_var.get(), 
                                                                         datetime.date(int(self.birth_date_year_var.get()), int(self.birth_date_mount_var.get()), int(self.birth_date_day_var.get())),
-                                                                        self.sity.get(), self.raion.get(), self.selo.get(),self.street.get(), self.work_var.get(), self.social.get(),
+                                                                        [k for k, v in self.DICT_CITY.items() if v == self.city.get()][0], #self.city.get(), 
+                                                                        [k for k, v in self.DICT_RAION.items() if v == self.raion.get()][0], #self.raion.get(), 
+                                                                        self.selo.get(),self.street.get(), self.work_var.get(), self.social.get(),
                                                                         self.special.get(), self.osvita.get(), self.diagnoz_1.get(), self.zaklad.get(), self.uskladn.get(), self.misce_ogl.get(), 
                                                                         self.pop_grupa_A.get(), self.pop_grupa_B.get(), self.meta.get(), self.vstan_grupa_A.get(), self.vstan_grupa_B.get(), 
                                                                         self.strock.get(), self.poteri.get(), self.prichin.get(), 
@@ -443,7 +444,7 @@ class Append_window(tkinter.Toplevel):
                                                                     datetime.date(int(self.data_ogl_year_var.get()), int(self.data_ogl_mount_var.get()), int(self.data_ogl_day_var.get())),   
                                                                     self.first_name.get(), self.name.get(), self.surname.get(), self.sex_var.get(), 
                                                                     datetime.date(int(self.birth_date_year_var.get()), int(self.birth_date_mount_var.get()), int(self.birth_date_day_var.get())),
-                                                                    self.sity.get(), 
+                                                                    self.city.get(), 
                                                                     self.raion.get(), 
                                                                     self.selo.get(),
                                                                     self.street.get(), 
@@ -738,21 +739,19 @@ class Report_region_window(tkinter.Toplevel):
     def init_report_region_window(self):
         self.title('Формування районного звіту')
         w = 450
-        h = 300
+        h = 270
         x = (main_window.winfo_screenwidth() // 2) - (w // 2)
         y = (main_window.winfo_screenheight() // 2 - 30) - (h // 2)
         self.geometry('{}x{}+{}+{}'.format(w, h, x, y))
         self.resizable(False, False)
-
-        #ВИБІР КОМІСІЇ
-        self.DICT_KOMIS = {0:'--', 1:'Обласна', 2:'Міськміжрайонна', 3:'Калуська', 4:'Коломийська', 5:'Кардіологічна', 6:'Міська',
+        """ВИБІР КОМІСІЇ"""
+        self.DICT_KOMIS = {0:'ВСІ КОМІСІЇ', 1:'Обласна', 2:'Міськміжрайонна', 3:'Калуська', 4:'Коломийська', 5:'Кардіологічна', 6:'Міська',
                            7:'Травматологічна', 8:'Психіатрична', 9:'Фтизіо-пульмонологічна', 10:'Міжрайонна', 11:'Коломия №2'}
         self.label_komis = ttk.Label(self, text='Вибір комісії', font = self.font_style).place(x=10, y=10)
         self.komis = ttk.Combobox(self, values=[self.DICT_KOMIS[i] for i in self.DICT_KOMIS], font = self.font_style)
         self.komis.current(0)
         self.komis.place(x=130, y=10)
-        
-        #ПЕРІОД
+        """ПЕРІОД"""
         self.label_period = ttk.Label(self, text='Період    з:', font = self.font_style).place(x=10, y=80)
         
         self.day_Z_var = StringVar()
@@ -786,7 +785,7 @@ class Report_region_window(tkinter.Toplevel):
         self.year_PO = ttk.Entry(self, font = self.font_style, width=5, textvariable = self.year_PO_var)
         self.year_PO.place(x=350, y=80)
         self.year_PO_var.trace("w", lambda *args: self.limiter_symbols(self.year_PO_var, self.year_PO, 4))
-        #ДІАГНОЗ    
+        """ДІАГНОЗ"""    
         self.label_diagnoz_Z = ttk.Label(self, text='Діагноз   з:', font = self.font_style).place(x=10, y=150)
         self.diagnoz_Z_var = StringVar()
         self.diagnoz_Z = ttk.Entry(self, font = self.font_style, width=6, textvariable = self.diagnoz_Z_var)
@@ -799,16 +798,9 @@ class Report_region_window(tkinter.Toplevel):
         self.diagnoz_PO = ttk.Entry(self, font = self.font_style, width=6, textvariable = self.diagnoz_PO_var)
         self.diagnoz_PO.place(x=220, y=150)
         self.diagnoz_PO_var.trace("w", lambda *args: self.limiter_symbols(self.diagnoz_PO_var, self.diagnoz_PO, 5))
-        """РАЙОН"""
-        self.DICT_RAION = {0:"ВСІ", 1:'Богородчанський', 2:'Верховинський', 3:'Галицький', 4:'Городенківський', 5:'Долинський', 6:'Калуський',7:'Коломийський',
-                           8:'Косівський', 9:'Надвірнянський', 10:'Рогатинський', 11:'Рожнятівський', 12:'Снятинський', 13:'Тисменицький', 14:'Тлумацький'}
-        self.label_raion = ttk.Label(self, text='Район', font = self.font_style).place(x=10, y=220)
-        self.raion = ttk.Combobox(self, values=[self.DICT_RAION[i] for i in self.DICT_RAION], font = self.font_style)
-        self.raion.current(0)
-        self.raion.place(x=110, y=220)
 
         self.btn_form = ttk.Button(self, text="Формувати")
-        self.btn_form.place(x=190, y=270)
+        self.btn_form.place(x=190, y=220)
         self.btn_form.bind("<Button-1>", lambda event: db.report_region([k for k, v in self.DICT_KOMIS.items() if v == self.komis.get()][0],
                                                                         datetime.date(int(self.year_Z_var.get()), 
                                                                                       int(self.mount_Z_var.get()), 
@@ -816,9 +808,7 @@ class Report_region_window(tkinter.Toplevel):
                                                                         datetime.date(int(self.year_PO_var.get()), 
                                                                                       int(self.mount_PO_var.get()), 
                                                                                       int(self.day_PO_var.get())),
-                                                                        self.diagnoz_Z_var.get(), self.diagnoz_PO_var.get(),
-                                                                        [k for k, v in self.DICT_RAION.items() if v == self.raion.get()][0]))
-
+                                                                        self.diagnoz_Z_var.get(), self.diagnoz_PO_var.get()))
         self.grab_set()
         self.focus_set()
 

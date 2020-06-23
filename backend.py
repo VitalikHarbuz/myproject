@@ -225,8 +225,55 @@ class DB:
 				self.conn.close()
 
 
-	def report_region(self, komis, date_Z, date_PO, diagnoz_Z, diagnoz_PO, raion):
-		print(komis, date_Z, date_PO, diagnoz_Z, diagnoz_PO, raion)
+	def report_region(self, num_msek, date_Z, date_PO, diagnoz_Z, diagnoz_PO):
+		#print(num_msek, date_Z, date_PO, diagnoz_Z, diagnoz_PO, raion)
+		if num_msek == 0:
+			print("ЦЕ ЩЕ НЕ ГОТОВО!!!")
+		elif num_msek != 0:
+			self.path = getcwd() + '/db_files/'
+			self.conn = sqlite3.connect(self.path + 'db_{}.db'.format(num_msek))
+			self.cur = self.conn.cursor()
+			#print("done")
+			#self.KODRAION = 1
+			self.DICT_RAION = {1:'Богородчанський', 2:'Верховинський', 3:'Галицький', 4:'Городенківський', 5:'Долинський', 6:'Калуський',7:'Коломийський',
+					8:'Косівський', 9:'Надвірнянський', 10:'Рогатинський', 11:'Рожнятівський', 12:'Снятинський', 13:'Тисменицький', 14:'Тлумацький',
+					16:'БОЛЕХІВ', 17:'ЯРЕМЧЕ', 41:'БУРШТИН'}
+			for key in self.DICT_RAION:
+				one_string=(
+				#																		ВСЬОГО ВИЗНАНИХ ВПЕРШЕ
+					[row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodraion = ? and roglad BETWEEN 0 and 3""", [date_Z, date_PO, key]).fetchone()],
+					[row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodraion = ? and roglad BETWEEN 0 and 1""", [date_Z, date_PO, key]).fetchone()],
+					[row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodraion = ? and roglad = 0""", [date_Z, date_PO, key]).fetchone()],
+					[row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodraion = ? and roglad = 1""", [date_Z, date_PO, key]).fetchone()],
+					[row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodraion = ? and roglad = 2""", [date_Z, date_PO, key]).fetchone()],
+					[row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodraion = ? and roglad = 3""", [date_Z, date_PO, key]).fetchone()],
+					[row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE strftime('%Y', 'now') - rod >= 18 AND strftime('%Y', 'now') - rod <= 39 AND oglad = 1 AND
+												datezakl BETWEEN ? AND ? AND kodraion = ? AND roglad BETWEEN 0 AND 3""", [date_Z, date_PO, key]).fetchone()],
+					[row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE strftime('%Y', 'now') - rod >= 40 AND strftime('%Y', 'now') - rod <= 60 AND oglad = 1 AND 
+												datezakl BETWEEN ? AND ? AND kodraion = ? AND roglad BETWEEN 0 AND 3""", [date_Z, date_PO, key]).fetchone()],
+				#																		В Т.Ч. ПРАЦЮЮЧИХ
+					[row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodraion = ? and woker = 1 AND roglad BETWEEN 0 and 3""", [date_Z, date_PO,  key]).fetchone()],
+					[row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodraion = ? and woker = 1 AND roglad BETWEEN 0 and 1""", [date_Z, date_PO,  key]).fetchone()],
+					[row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodraion = ? and woker = 1 AND roglad = 0""", [date_Z, date_PO, key]).fetchone()],
+					[row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodraion = ? and woker = 1 AND roglad = 1""", [date_Z, date_PO, key]).fetchone()],
+					[row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodraion = ? and woker = 1 AND roglad = 2""", [date_Z, date_PO, key]).fetchone()],
+					[row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodraion = ? and woker = 1 AND roglad = 3""", [date_Z, date_PO, key]).fetchone()],
+				#																		В Т.Ч. ПРАЦ. ВІКУ
+					[row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE strftime('%Y', 'now') - rod >= 18 AND strftime('%Y', 'now') - rod <= 60 AND oglad = 1 AND 
+												datezakl BETWEEN ? AND ? AND kodraion = ? AND roglad BETWEEN 0 AND 3""", [date_Z, date_PO, key]).fetchone()],
+					[row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE strftime('%Y', 'now') - rod >= 18 AND strftime('%Y', 'now') - rod <= 60 AND oglad = 1 AND 
+												datezakl BETWEEN ? AND ? AND kodraion = ? AND roglad BETWEEN 0 AND 1""", [date_Z, date_PO, key]).fetchone()],
+					[row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE strftime('%Y', 'now') - rod >= 18 AND strftime('%Y', 'now') - rod <= 60 AND oglad = 1 AND 
+												datezakl BETWEEN ? AND ? AND kodraion = ? AND roglad = 0""", [date_Z, date_PO, key]).fetchone()],
+					[row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE strftime('%Y', 'now') - rod >= 18 AND strftime('%Y', 'now') - rod <= 60 AND oglad = 1 AND 
+												datezakl BETWEEN ? AND ? AND kodraion = ? AND roglad = 1""", [date_Z, date_PO, key]).fetchone()],
+					[row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE strftime('%Y', 'now') - rod >= 18 AND strftime('%Y', 'now') - rod <= 60 AND oglad = 1 AND 
+												datezakl BETWEEN ? AND ? AND kodraion = ? AND roglad = 2""", [date_Z, date_PO, key]).fetchone()],
+					[row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE strftime('%Y', 'now') - rod >= 18 AND strftime('%Y', 'now') - rod <= 60 AND oglad = 1 AND 
+												datezakl BETWEEN ? AND ? AND kodraion = ? AND roglad = 3""", [date_Z, date_PO, key]).fetchone()],
+							)
+				string = '\t'.join(str(i) for i in one_string)
+				print(str(key) + '\t' + string)
 
 
 if __name__ == "__main__":
