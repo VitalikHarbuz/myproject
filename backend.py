@@ -225,6 +225,10 @@ class DB:
 				self.conn.close()
 
 
+	def report_region(self, komis, date_Z, date_PO, diagnoz_Z, diagnoz_PO, raion):
+		print(komis, date_Z, date_PO, diagnoz_Z, diagnoz_PO, raion)
+
+
 if __name__ == "__main__":
 
 	db = DB()
