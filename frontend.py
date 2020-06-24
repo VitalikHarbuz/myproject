@@ -180,7 +180,7 @@ class Append_window(tkinter.Toplevel):
         self.birth_date_year_var.trace("w", lambda *args: self.limiter_symbols(self.birth_date_year_var, self.birth_date_year, 4))
         
         """МІСТО"""
-        self.DICT_CITY = {0:'--', 1:'Івано-Франківськ', 16:'Болехів', 17:'Яремче', 41:'Бурштин', 2:'ІНШЕ'}
+        self.DICT_CITY = {0:'--', 1:'Івано-Франківськ', 16:'Болехів', 17:'Яремче', 41:'Бурштин'}
         self.label_city = ttk.Label(self, text='Місто', font = self.font_style).place(x=10, y=345)
         self.city = ttk.Combobox(self, values=[self.DICT_CITY[i] for i in self.DICT_CITY], font = self.font_style)
         self.city.current(0)
