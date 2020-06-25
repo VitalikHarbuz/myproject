@@ -228,7 +228,8 @@ class DB:
 
 	def report_region(self, num_msek, date_Z, date_PO, diagnoz_Z, diagnoz_PO):
 		self.DICT_CITY = {1:'Івано-Франківськ', 3:'Болехів', 25:'Яремче', 5:'Бурштин'}
-		#print(num_msek, date_Z, date_PO, diagnoz_Z, diagnoz_PO, raion)
+		self.DICT_FIRST = {}
+		self.DICT_SECOND = {}
 		if num_msek == 0:
 			print("ЦЕ ЩЕ НЕ ГОТОВО!!!")
 		elif num_msek != 0:
@@ -236,8 +237,10 @@ class DB:
 			self.conn = sqlite3.connect(self.path + 'db_{}.db'.format(num_msek))
 			self.cur = self.conn.cursor()
 			self.KODRAION = 1
+			
+
 			while self.KODRAION != 15:
-				one_string=(
+				self.first_part=(
 				#																		ВСЬОГО ВИЗНАНИХ ВПЕРШЕ
 					[row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodraion = ? and roglad BETWEEN 0 and 3""", [date_Z, date_PO, self.KODRAION]).fetchone()],
 					[row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodraion = ? and roglad BETWEEN 0 and 1""", [date_Z, date_PO, self.KODRAION]).fetchone()],
@@ -270,12 +273,13 @@ class DB:
 					[row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE strftime('%Y', 'now') - rod >= 18 AND strftime('%Y', 'now') - rod <= 60 AND oglad = 1 AND 
 												datezakl BETWEEN ? AND ? AND kodraion = ? AND roglad = 3""", [date_Z, date_PO, self.KODRAION]).fetchone()],
 							)
-				string = ''.join(str(i) for i in one_string)
-				self.write_to_xlsx(string)
-				#print(str(self.KODRAION) + '\t' + string)
+				self.DICT_FIRST[self.KODRAION] = self.first_part
 				self.KODRAION += 1
+
+			
+
 			for key in self.DICT_CITY:
-				two_string=(
+				self.second_part=(
 				#																		ВСЬОГО ВИЗНАНИХ ВПЕРШЕ
 					[row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodsity = ? and roglad BETWEEN 0 and 3""", [date_Z, date_PO, key]).fetchone()],
 					[row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodsity = ? and roglad BETWEEN 0 and 1""", [date_Z, date_PO, key]).fetchone()],
@@ -307,22 +311,17 @@ class DB:
 												datezakl BETWEEN ? AND ? AND kodsity = ? AND roglad = 2""", [date_Z, date_PO, key]).fetchone()],
 					[row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE strftime('%Y', 'now') - rod >= 18 AND strftime('%Y', 'now') - rod <= 60 AND oglad = 1 AND 
 												datezakl BETWEEN ? AND ? AND kodsity = ? AND roglad = 3""", [date_Z, date_PO, key]).fetchone()],
-							)
-				string1 = '\t'.join(str(i) for i in two_string)
-				#print(str(key) + '\t' + string1)
+							)		
+				self.DICT_SECOND[key] = self.second_part
+			self.write_to_xlsx(self.DICT_FIRST, self.DICT_SECOND)
 
 
-	def write_to_xlsx(self, first_part, second_part=None):
-		print('хуй')
+	def write_to_xlsx(self, first_part, second_part):
+		print(first_part, second_part)
 		row = 0
 		col = 0
 		workbook = xlsxwriter.Workbook('report.xlsx')
 		worksheet = workbook.add_worksheet('ЗВІТ')
-
-		worksheet.write_column('A1', first_part)
-
-		workbook.close()
-
 
 
 if __name__ == "__main__":
