@@ -228,6 +228,8 @@ class DB:
 
 	def report_region(self, num_msek, date_Z, date_PO, diagnoz_Z, diagnoz_PO):
 		self.DICT_CITY = {1:'Івано-Франківськ', 3:'Болехів', 25:'Яремче', 5:'Бурштин'}
+		self.DICT_RAION = {0:'--', 1:'Богородчанський', 2:'Верховинський', 3:'Галицький', 4:'Городенківський', 5:'Долинський', 6:'Калуський',7:'Коломийський',
+							8:'Косівський', 9:'Надвірнянський', 10:'Рогатинський', 11:'Рожнятівський', 12:'Снятинський', 13:'Тисменицький', 14:'Тлумацький'}
 		self.DICT_FIRST = {}
 		self.DICT_SECOND = {}
 		if num_msek == 0:
@@ -275,7 +277,6 @@ class DB:
 							)
 				self.DICT_FIRST[self.KODRAION] = self.first_part
 				self.KODRAION += 1
-
 			
 
 			for key in self.DICT_CITY:
@@ -313,15 +314,88 @@ class DB:
 												datezakl BETWEEN ? AND ? AND kodsity = ? AND roglad = 3""", [date_Z, date_PO, key]).fetchone()],
 							)		
 				self.DICT_SECOND[key] = self.second_part
-			self.write_to_xlsx(self.DICT_FIRST, self.DICT_SECOND)
+			self.write_to_xlsx(self.DICT_CITY, self.DICT_RAION, self.DICT_FIRST, self.DICT_SECOND)
 
 
-	def write_to_xlsx(self, first_part, second_part):
-		print(first_part, second_part)
+	def write_to_xlsx(self, DICT_CITY, DICT_RAION, first_part, second_part):
+
 		row = 0
 		col = 0
 		workbook = xlsxwriter.Workbook('report.xlsx')
-		worksheet = workbook.add_worksheet('ЗВІТ')
+		worksheet = workbook.add_worksheet('ЗВІТ 14ф')
+		
+		for key, value in first_part.items():
+			worksheet.write(row, col, str(DICT_RAION[key]))
+			worksheet.write(row, col + 1, int(''.join(str(value[0][0]))))
+			worksheet.write(row, col + 2, int(''.join(str(value[1][0]))))
+			worksheet.write(row, col + 3, int(''.join(str(value[2][0]))))
+			worksheet.write(row, col + 4, int(''.join(str(value[3][0]))))
+			worksheet.write(row, col + 5, int(''.join(str(value[4][0]))))
+			worksheet.write(row, col + 6, int(''.join(str(value[5][0]))))
+			worksheet.write(row, col + 7, int(''.join(str(value[6][0]))))
+			worksheet.write(row, col + 8, int(''.join(str(value[7][0]))))
+			worksheet.write(row, col + 9, int(''.join(str(value[8][0]))))
+			worksheet.write(row, col + 10, int(''.join(str(value[9][0]))))
+			worksheet.write(row, col + 11, int(''.join(str(value[10][0]))))
+			worksheet.write(row, col + 12, int(''.join(str(value[11][0]))))
+			worksheet.write(row, col + 13, int(''.join(str(value[12][0]))))
+			worksheet.write(row, col + 14, int(''.join(str(value[13][0]))))
+			worksheet.write(row, col + 15, int(''.join(str(value[14][0]))))
+			worksheet.write(row, col + 16, int(''.join(str(value[15][0]))))
+			worksheet.write(row, col + 17, int(''.join(str(value[16][0]))))
+			worksheet.write(row, col + 18, int(''.join(str(value[17][0]))))
+			worksheet.write(row, col + 19, int(''.join(str(value[18][0]))))
+			worksheet.write(row, col + 20, int(''.join(str(value[19][0]))))
+			row += 1
+		
+		for key, value in second_part.items():
+			worksheet.write(row, col, str(DICT_CITY[key]))
+			worksheet.write(row, col + 1, int(''.join(str(value[0][0]))))
+			worksheet.write(row, col + 2, int(''.join(str(value[1][0]))))
+			worksheet.write(row, col + 3, int(''.join(str(value[2][0]))))
+			worksheet.write(row, col + 4, int(''.join(str(value[3][0]))))
+			worksheet.write(row, col + 5, int(''.join(str(value[4][0]))))
+			worksheet.write(row, col + 6, int(''.join(str(value[5][0]))))
+			worksheet.write(row, col + 7, int(''.join(str(value[6][0]))))
+			worksheet.write(row, col + 8, int(''.join(str(value[7][0]))))
+			worksheet.write(row, col + 9, int(''.join(str(value[8][0]))))
+			worksheet.write(row, col + 10, int(''.join(str(value[9][0]))))
+			worksheet.write(row, col + 11, int(''.join(str(value[10][0]))))
+			worksheet.write(row, col + 12, int(''.join(str(value[11][0]))))
+			worksheet.write(row, col + 13, int(''.join(str(value[12][0]))))
+			worksheet.write(row, col + 14, int(''.join(str(value[13][0]))))
+			worksheet.write(row, col + 15, int(''.join(str(value[14][0]))))
+			worksheet.write(row, col + 16, int(''.join(str(value[15][0]))))
+			worksheet.write(row, col + 17, int(''.join(str(value[16][0]))))
+			worksheet.write(row, col + 18, int(''.join(str(value[17][0]))))
+			worksheet.write(row, col + 19, int(''.join(str(value[18][0]))))
+			worksheet.write(row, col + 20, int(''.join(str(value[19][0]))))
+			row += 1
+			
+			worksheet.write(row, col, 'ВСЬОГО')
+			worksheet.write(row, col + 1, '=SUM(B1:B' + str(row) + ')')
+			worksheet.write(row, col + 2, '=SUM(C1:C' + str(row) + ')')
+			worksheet.write(row, col + 3, '=SUM(D1:D' + str(row) + ')')
+			worksheet.write(row, col + 4, '=SUM(E1:E' + str(row) + ')')
+			worksheet.write(row, col + 5, '=SUM(F1:F' + str(row) + ')')
+			worksheet.write(row, col + 6, '=SUM(G1:G' + str(row) + ')')
+			worksheet.write(row, col + 7, '=SUM(H1:H' + str(row) + ')')
+			worksheet.write(row, col + 8, '=SUM(I1:I' + str(row) + ')')
+			worksheet.write(row, col + 9, '=SUM(J1:J' + str(row) + ')')
+			worksheet.write(row, col + 10, '=SUM(K1:K' + str(row) + ')')
+			worksheet.write(row, col + 11, '=SUM(L1:L' + str(row) + ')')
+			worksheet.write(row, col + 12, '=SUM(M1:M' + str(row) + ')')
+			worksheet.write(row, col + 13, '=SUM(N1:N' + str(row) + ')')
+			worksheet.write(row, col + 14, '=SUM(O1:O' + str(row) + ')')
+			worksheet.write(row, col + 15, '=SUM(P1:P' + str(row) + ')')
+			worksheet.write(row, col + 16, '=SUM(Q1:Q' + str(row) + ')')
+			worksheet.write(row, col + 17, '=SUM(R1:R' + str(row) + ')')
+			worksheet.write(row, col + 18, '=SUM(S1:S' + str(row) + ')')
+			worksheet.write(row, col + 19, '=SUM(T1:T' + str(row) + ')')
+			worksheet.write(row, col + 20, '=SUM(U1:U' + str(row) + ')')
+
+
+		workbook.close()
 
 
 if __name__ == "__main__":
