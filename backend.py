@@ -231,6 +231,7 @@ class DB:
                           3:'Болехів', 
                           25:'Яремче', 
                           5:'Бурштин'}
+
         self.DICT_RAION = {1:'Богородчанський', 2:'Верховинський', 
                            3:'Галицький', 4:'Городенківський', 
                            5:'Долинський', 6:'Калуський',
@@ -238,17 +239,162 @@ class DB:
                            9:'Надвірнянський', 10:'Рогатинський', 
                            11:'Рожнятівський', 12:'Снятинський', 
                            13:'Тисменицький', 14:'Тлумацький'}
-        self.DICT_FIRST = {}
-        self.DICT_SECOND = {}
+        
         if num_msek == 0:
-            print("ЦЕ ЩЕ НЕ ГОТОВО!!!")
+            
+            self.DICT_FIRST = {1 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                               2 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                               3 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                               4 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                               5 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                               6 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                               7 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                               8 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                               9 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                               10 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                               11 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                               12 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                               13 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                               14 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}
+            
+            self.DICT_SECOND = {1 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                                3 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                                25 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                                5 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}
+
+            self.path = getcwd() + '/db_files/'
+            self.dir_list = listdir(path = self.path)
+            
+            for db_name in self.dir_list:
+                self.conn = sqlite3.connect(self.path + db_name)
+                self.cur = self.conn.cursor()
+                self.KODRAION = 1
+                while self.KODRAION < 15:
+                    self.first_part=(
+                    #                                                                       ВСЬОГО ВИЗНАНИХ ВПЕРШЕ
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodraion = ? and roglad BETWEEN 0 and 3 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, self.KODRAION, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodraion = ? and roglad BETWEEN 0 and 1 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, self.KODRAION, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodraion = ? and roglad = 1 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, self.KODRAION, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodraion = ? and roglad = 0 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, self.KODRAION, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodraion = ? and roglad = 2 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, self.KODRAION, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodraion = ? and roglad = 3 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, self.KODRAION, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE strftime('%Y', 'now') - rod >= 18 AND strftime('%Y', 'now') - rod <= 39 AND oglad = 1 AND
+                                                    datezakl BETWEEN ? AND ? AND kodraion = ? AND roglad BETWEEN 0 AND 3 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, self.KODRAION, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE strftime('%Y', 'now') - rod >= 40 AND strftime('%Y', 'now') - rod <= 60 AND oglad = 1 AND 
+                                                    datezakl BETWEEN ? AND ? AND kodraion = ? AND roglad BETWEEN 0 AND 3 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, self.KODRAION, diagnoz_Z, diagnoz_PO]).fetchone()],
+                    #                                                                       В Т.Ч. ПРАЦЮЮЧИХ
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodraion = ? and woker = 1 AND roglad BETWEEN 0 and 3 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO,  self.KODRAION, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodraion = ? and woker = 1 AND roglad BETWEEN 0 and 1 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO,  self.KODRAION, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodraion = ? and woker = 1 AND roglad = 1 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, self.KODRAION, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodraion = ? and woker = 1 AND roglad = 0 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, self.KODRAION, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodraion = ? and woker = 1 AND roglad = 2 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, self.KODRAION, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodraion = ? and woker = 1 AND roglad = 3 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, self.KODRAION, diagnoz_Z, diagnoz_PO]).fetchone()],
+                    #                                                                       В Т.Ч. ПРАЦ. ВІКУ
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE strftime('%Y', 'now') - rod >= 18 AND strftime('%Y', 'now') - rod <= 60 AND oglad = 1 AND 
+                                                    datezakl BETWEEN ? AND ? AND kodraion = ? AND roglad BETWEEN 0 AND 3 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, self.KODRAION, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE strftime('%Y', 'now') - rod >= 18 AND strftime('%Y', 'now') - rod <= 60 AND oglad = 1 AND 
+                                                    datezakl BETWEEN ? AND ? AND kodraion = ? AND roglad BETWEEN 0 AND 1 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, self.KODRAION, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE strftime('%Y', 'now') - rod >= 18 AND strftime('%Y', 'now') - rod <= 60 AND oglad = 1 AND 
+                                                    datezakl BETWEEN ? AND ? AND kodraion = ? AND roglad = 1 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, self.KODRAION, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE strftime('%Y', 'now') - rod >= 18 AND strftime('%Y', 'now') - rod <= 60 AND oglad = 1 AND 
+                                                    datezakl BETWEEN ? AND ? AND kodraion = ? AND roglad = 0 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, self.KODRAION, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE strftime('%Y', 'now') - rod >= 18 AND strftime('%Y', 'now') - rod <= 60 AND oglad = 1 AND 
+                                                    datezakl BETWEEN ? AND ? AND kodraion = ? AND roglad = 2 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, self.KODRAION, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE strftime('%Y', 'now') - rod >= 18 AND strftime('%Y', 'now') - rod <= 60 AND oglad = 1 AND 
+                                                    datezakl BETWEEN ? AND ? AND kodraion = ? AND roglad = 3 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, self.KODRAION, diagnoz_Z, diagnoz_PO]).fetchone()],
+                                )
+                    
+                    self.first_list = []
+
+                    for i in self.first_part:
+                        self.first_list.append(i[0])
+
+                    for i, v in enumerate(self.first_list):
+                        self.DICT_FIRST[self.KODRAION].append(v + self.DICT_FIRST[self.KODRAION][i])
+                        self.DICT_FIRST[self.KODRAION].pop(0)
+                
+                    self.KODRAION += 1
+                
+                for key in self.DICT_CITY:
+                    self.second_part=(
+                    #                                                                       ВСЬОГО ВИЗНАНИХ ВПЕРШЕ
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodsity = ? and roglad BETWEEN 0 and 3 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, key, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodsity = ? and roglad BETWEEN 0 and 1 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, key, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodsity = ? and roglad = 1 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, key, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodsity = ? and roglad = 0 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, key, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodsity = ? and roglad = 2 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, key, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodsity = ? and roglad = 3 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, key, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE strftime('%Y', 'now') - rod >= 18 AND strftime('%Y', 'now') - rod <= 39 AND oglad = 1 AND
+                                                    datezakl BETWEEN ? AND ? AND kodsity = ? AND roglad BETWEEN 0 AND 3 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, key, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE strftime('%Y', 'now') - rod >= 40 AND strftime('%Y', 'now') - rod <= 60 AND oglad = 1 AND 
+                                                    datezakl BETWEEN ? AND ? AND kodsity = ? AND roglad BETWEEN 0 AND 3 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, key, diagnoz_Z, diagnoz_PO]).fetchone()],
+                    #                                                                       В Т.Ч. ПРАЦЮЮЧИХ
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodsity = ? and woker = 1 AND roglad BETWEEN 0 and 3 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, key, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodsity = ? and woker = 1 AND roglad BETWEEN 0 and 1 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, key, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodsity = ? and woker = 1 AND roglad = 1 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, key, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodsity = ? and woker = 1 AND roglad = 0 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, key, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodsity = ? and woker = 1 AND roglad = 2 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, key, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodsity = ? and woker = 1 AND roglad = 3 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, key, diagnoz_Z, diagnoz_PO]).fetchone()],
+                    #                                                                       В Т.Ч. ПРАЦ. ВІКУ
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE strftime('%Y', 'now') - rod >= 18 AND strftime('%Y', 'now') - rod <= 60 AND oglad = 1 AND 
+                                                    datezakl BETWEEN ? AND ? AND kodsity = ? AND roglad BETWEEN 0 AND 3 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, key, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE strftime('%Y', 'now') - rod >= 18 AND strftime('%Y', 'now') - rod <= 60 AND oglad = 1 AND 
+                                                    datezakl BETWEEN ? AND ? AND kodsity = ? AND roglad BETWEEN 0 AND 1 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, key, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE strftime('%Y', 'now') - rod >= 18 AND strftime('%Y', 'now') - rod <= 60 AND oglad = 1 AND 
+                                                    datezakl BETWEEN ? AND ? AND kodsity = ? AND roglad = 1 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, key, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE strftime('%Y', 'now') - rod >= 18 AND strftime('%Y', 'now') - rod <= 60 AND oglad = 1 AND 
+                                                    datezakl BETWEEN ? AND ? AND kodsity = ? AND roglad = 0 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, key, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE strftime('%Y', 'now') - rod >= 18 AND strftime('%Y', 'now') - rod <= 60 AND oglad = 1 AND 
+                                                    datezakl BETWEEN ? AND ? AND kodsity = ? AND roglad = 2 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, key, diagnoz_Z, diagnoz_PO]).fetchone()],
+                        [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE strftime('%Y', 'now') - rod >= 18 AND strftime('%Y', 'now') - rod <= 60 AND oglad = 1 AND 
+                                                    datezakl BETWEEN ? AND ? AND kodsity = ? AND roglad = 3 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, key, diagnoz_Z, diagnoz_PO]).fetchone()],
+                                )       
+                    
+                    self.second_list = []
+
+                    for i in self.second_part:
+                        self.second_list.append(i[0])
+                
+            
+                    for i, v in enumerate(self.second_list):
+                        self.DICT_SECOND[key].append(v + self.DICT_SECOND[key][i])
+                        self.DICT_SECOND[key].pop(0)
+                
+            #for K, V in self.DICT_FIRST.items():
+            #    print(K, V)
+
+            #for K, V  in self.DICT_SECOND.items():
+            #    print(K, V)
+
+            self.write_to_xlsx(self.DICT_CITY, self.DICT_RAION, self.DICT_FIRST, self.DICT_SECOND, num_msek, date_Z, date_PO, diagnoz_Z, diagnoz_PO)
+
+
         elif num_msek != 0:
+            self.DICT_FIRST = {1 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                               2 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                               3 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                               4 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                               5 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                               6 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                               7 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                               8 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                               9 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                               10 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                               11 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                               12 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                               13 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                               14 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}
+            
+            self.DICT_SECOND = {1 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                                3 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                                25 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                                5 : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}
             self.path = getcwd() + '/db_files/'
             self.conn = sqlite3.connect(self.path + 'db_{}.db'.format(num_msek))
             self.cur = self.conn.cursor()
             self.KODRAION = 1
             
-            while self.KODRAION != 15:
+            while self.KODRAION < 15:
                 self.first_part=(
                 #                                                                       ВСЬОГО ВИЗНАНИХ ВПЕРШЕ
                     [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE oglad = 1 and datezakl BETWEEN ? and ? and kodraion = ? and roglad BETWEEN 0 and 3 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, self.KODRAION, diagnoz_Z, diagnoz_PO]).fetchone()],
@@ -282,7 +428,16 @@ class DB:
                     [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE strftime('%Y', 'now') - rod >= 18 AND strftime('%Y', 'now') - rod <= 60 AND oglad = 1 AND 
                                                 datezakl BETWEEN ? AND ? AND kodraion = ? AND roglad = 3 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, self.KODRAION, diagnoz_Z, diagnoz_PO]).fetchone()],
                             )
-                self.DICT_FIRST[self.KODRAION] = self.first_part
+                
+                self.first_list = []
+
+                for i in self.first_part:
+                    self.first_list.append(i[0])
+
+                for i, v in enumerate(self.first_list):
+                    self.DICT_FIRST[self.KODRAION].append(v + self.DICT_FIRST[self.KODRAION][i])
+                    self.DICT_FIRST[self.KODRAION].pop(0)
+            
                 self.KODRAION += 1
             
 
@@ -319,14 +474,28 @@ class DB:
                                                 datezakl BETWEEN ? AND ? AND kodsity = ? AND roglad = 2 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, key, diagnoz_Z, diagnoz_PO]).fetchone()],
                     [row for row in self.cur.execute("""SELECT COUNT(roglad) FROM db WHERE strftime('%Y', 'now') - rod >= 18 AND strftime('%Y', 'now') - rod <= 60 AND oglad = 1 AND 
                                                 datezakl BETWEEN ? AND ? AND kodsity = ? AND roglad = 3 and diagnoz BETWEEN ? and ?""", [date_Z, date_PO, key, diagnoz_Z, diagnoz_PO]).fetchone()],
-                            )       
-                self.DICT_SECOND[key] = self.second_part
+                            )
+
+                self.second_list = []
+
+                for i in self.second_part:
+                    self.second_list.append(i[0])
+            
+                for i, v in enumerate(self.second_list):
+                    self.DICT_SECOND[key].append(v + self.DICT_SECOND[key][i])
+                    self.DICT_SECOND[key].pop(0)
+
+            #for K, V in self.DICT_FIRST.items():
+            #    print(K, V)
+
+            #for K, V  in self.DICT_SECOND.items():
+            #    print(K, V)
 
             self.write_to_xlsx(self.DICT_CITY, self.DICT_RAION, self.DICT_FIRST, self.DICT_SECOND, num_msek, date_Z, date_PO, diagnoz_Z, diagnoz_PO)
 
 
     def write_to_xlsx(self, DICT_CITY, DICT_RAION, first_part, second_part, num_msek, date_Z, date_PO, diagnoz_Z, diagnoz_PO):
-
+        #print(first_part, second_part)
         self.DICT_KOMIS = {0:'ВСІ МСЕК', 1:'Обласна', 2:'Міськміжрайонна', 
                            3:'Калуська', 4:'Коломийська', 5:'Кардіологічна', 
                            6:'Міська', 7:'Травматологічна', 8:'Психіатрична', 
@@ -353,7 +522,7 @@ class DB:
         worksheet.write('E7', 'Iб')
         worksheet.write('F6', 'ІІгр.')
         worksheet.write('G6', 'ІІІгр.')
-        worksheet.write('H5', 'До 39р.')
+        worksheet.write('H6', 'До 39р.')
         worksheet.write('I5', 'Від 40')
         worksheet.write('I6', 'до 55/60')
         
@@ -380,50 +549,50 @@ class DB:
 
         for key, value in first_part.items():
             worksheet.write(row, col, str(DICT_RAION[key]))
-            worksheet.write(row, col + 1, int(''.join(str(value[0][0]))))
-            worksheet.write(row, col + 2, int(''.join(str(value[1][0]))))
-            worksheet.write(row, col + 3, int(''.join(str(value[2][0]))))
-            worksheet.write(row, col + 4, int(''.join(str(value[3][0]))))
-            worksheet.write(row, col + 5, int(''.join(str(value[4][0]))))
-            worksheet.write(row, col + 6, int(''.join(str(value[5][0]))))
-            worksheet.write(row, col + 7, int(''.join(str(value[6][0]))))
-            worksheet.write(row, col + 8, int(''.join(str(value[7][0]))))
-            worksheet.write(row, col + 9, int(''.join(str(value[8][0]))))
-            worksheet.write(row, col + 10, int(''.join(str(value[9][0]))))
-            worksheet.write(row, col + 11, int(''.join(str(value[10][0]))))
-            worksheet.write(row, col + 12, int(''.join(str(value[11][0]))))
-            worksheet.write(row, col + 13, int(''.join(str(value[12][0]))))
-            worksheet.write(row, col + 14, int(''.join(str(value[13][0]))))
-            worksheet.write(row, col + 15, int(''.join(str(value[14][0]))))
-            worksheet.write(row, col + 16, int(''.join(str(value[15][0]))))
-            worksheet.write(row, col + 17, int(''.join(str(value[16][0]))))
-            worksheet.write(row, col + 18, int(''.join(str(value[17][0]))))
-            worksheet.write(row, col + 19, int(''.join(str(value[18][0]))))
-            worksheet.write(row, col + 20, int(''.join(str(value[19][0]))))
+            worksheet.write(row, col + 1, int(''.join(str(value[0]))))
+            worksheet.write(row, col + 2, int(''.join(str(value[1]))))
+            worksheet.write(row, col + 3, int(''.join(str(value[2]))))
+            worksheet.write(row, col + 4, int(''.join(str(value[3]))))
+            worksheet.write(row, col + 5, int(''.join(str(value[4]))))
+            worksheet.write(row, col + 6, int(''.join(str(value[5]))))
+            worksheet.write(row, col + 7, int(''.join(str(value[6]))))
+            worksheet.write(row, col + 8, int(''.join(str(value[7]))))
+            worksheet.write(row, col + 9, int(''.join(str(value[8]))))
+            worksheet.write(row, col + 10, int(''.join(str(value[9]))))
+            worksheet.write(row, col + 11, int(''.join(str(value[10]))))
+            worksheet.write(row, col + 12, int(''.join(str(value[11]))))
+            worksheet.write(row, col + 13, int(''.join(str(value[12]))))
+            worksheet.write(row, col + 14, int(''.join(str(value[13]))))
+            worksheet.write(row, col + 15, int(''.join(str(value[14]))))
+            worksheet.write(row, col + 16, int(''.join(str(value[15]))))
+            worksheet.write(row, col + 17, int(''.join(str(value[16]))))
+            worksheet.write(row, col + 18, int(''.join(str(value[17]))))
+            worksheet.write(row, col + 19, int(''.join(str(value[18]))))
+            worksheet.write(row, col + 20, int(''.join(str(value[19]))))
             row += 1
         
         for key, value in second_part.items():
             worksheet.write(row, col, str(DICT_CITY[key]))
-            worksheet.write(row, col + 1, int(''.join(str(value[0][0]))))
-            worksheet.write(row, col + 2, int(''.join(str(value[1][0]))))
-            worksheet.write(row, col + 3, int(''.join(str(value[2][0]))))
-            worksheet.write(row, col + 4, int(''.join(str(value[3][0]))))
-            worksheet.write(row, col + 5, int(''.join(str(value[4][0]))))
-            worksheet.write(row, col + 6, int(''.join(str(value[5][0]))))
-            worksheet.write(row, col + 7, int(''.join(str(value[6][0]))))
-            worksheet.write(row, col + 8, int(''.join(str(value[7][0]))))
-            worksheet.write(row, col + 9, int(''.join(str(value[8][0]))))
-            worksheet.write(row, col + 10, int(''.join(str(value[9][0]))))
-            worksheet.write(row, col + 11, int(''.join(str(value[10][0]))))
-            worksheet.write(row, col + 12, int(''.join(str(value[11][0]))))
-            worksheet.write(row, col + 13, int(''.join(str(value[12][0]))))
-            worksheet.write(row, col + 14, int(''.join(str(value[13][0]))))
-            worksheet.write(row, col + 15, int(''.join(str(value[14][0]))))
-            worksheet.write(row, col + 16, int(''.join(str(value[15][0]))))
-            worksheet.write(row, col + 17, int(''.join(str(value[16][0]))))
-            worksheet.write(row, col + 18, int(''.join(str(value[17][0]))))
-            worksheet.write(row, col + 19, int(''.join(str(value[18][0]))))
-            worksheet.write(row, col + 20, int(''.join(str(value[19][0]))))
+            worksheet.write(row, col + 1, int(''.join(str(value[0]))))
+            worksheet.write(row, col + 2, int(''.join(str(value[1]))))
+            worksheet.write(row, col + 3, int(''.join(str(value[2]))))
+            worksheet.write(row, col + 4, int(''.join(str(value[3]))))
+            worksheet.write(row, col + 5, int(''.join(str(value[4]))))
+            worksheet.write(row, col + 6, int(''.join(str(value[5]))))
+            worksheet.write(row, col + 7, int(''.join(str(value[6]))))
+            worksheet.write(row, col + 8, int(''.join(str(value[7]))))
+            worksheet.write(row, col + 9, int(''.join(str(value[8]))))
+            worksheet.write(row, col + 10, int(''.join(str(value[9]))))
+            worksheet.write(row, col + 11, int(''.join(str(value[10]))))
+            worksheet.write(row, col + 12, int(''.join(str(value[11]))))
+            worksheet.write(row, col + 13, int(''.join(str(value[12]))))
+            worksheet.write(row, col + 14, int(''.join(str(value[13]))))
+            worksheet.write(row, col + 15, int(''.join(str(value[14]))))
+            worksheet.write(row, col + 16, int(''.join(str(value[15]))))
+            worksheet.write(row, col + 17, int(''.join(str(value[16]))))
+            worksheet.write(row, col + 18, int(''.join(str(value[17]))))
+            worksheet.write(row, col + 19, int(''.join(str(value[18]))))
+            worksheet.write(row, col + 20, int(''.join(str(value[19]))))
             row += 1
             
             worksheet.write(row, col, 'ВСЬОГО')

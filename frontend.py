@@ -808,7 +808,7 @@ class Report_region_window(tkinter.Toplevel):
                                                                         datetime.date(int(self.year_PO_var.get()), 
                                                                                       int(self.mount_PO_var.get()), 
                                                                                       int(self.day_PO_var.get())),
-                                                                        self.diagnoz_Z_var.get(), self.diagnoz_PO_var.get()))
+                                                                        self.diagnoz_Z_var.get().upper(), self.diagnoz_PO_var.get().upper()))
         self.grab_set()
         self.focus_set()
 
